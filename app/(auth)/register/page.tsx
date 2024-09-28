@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import { Form } from "@/components/form";
 import { SubmitButton } from "@/components/submit-button";
 import { register, RegisterActionState } from "../actions";
-import { useActionState, useEffect } from "react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export default function Page() {
   const router = useRouter();

@@ -1,6 +1,11 @@
 "use client";
 
+import cx from "classnames";
+import { motion } from "framer-motion";
+import { useRef, useState, type Dispatch, type SetStateAction } from "react";
 import useSWR from "swr";
+import { useOnClickOutside, useWindowSize } from "usehooks-ts";
+import { fetcher } from "@/utils/functions";
 import {
   CheckedSquare,
   InfoIcon,
@@ -9,11 +14,6 @@ import {
   UncheckedSquare,
   UploadIcon,
 } from "./icons";
-import { useRef, useState, type Dispatch, type SetStateAction } from "react";
-import { fetcher } from "@/utils/functions";
-import cx from "classnames";
-import { motion } from "framer-motion";
-import { useOnClickOutside, useWindowSize } from "usehooks-ts";
 
 export const Files = ({
   selectedFilePathnames,
