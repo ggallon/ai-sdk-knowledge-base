@@ -9,7 +9,7 @@ import {
   UncheckedSquare,
   UploadIcon,
 } from "./icons";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { fetcher } from "@/utils/functions";
 import cx from "classnames";
 import { motion } from "framer-motion";
@@ -150,7 +150,7 @@ export const Files = ({
             </div>
           ) : null}
 
-          {files?.map((file: any) => (
+          {files?.map((file) => (
             <div
               key={file.pathname}
               className={`flex flex-row border-b p-2 dark:border-zinc-700 ${

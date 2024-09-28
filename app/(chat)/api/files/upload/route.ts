@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   const { searchParams } = new URL(request.url);
   const filename = searchParams.get("filename");
 
-  let session = await auth();
+  const session = await auth();
 
   if (!session) {
     return Response.redirect("/login");

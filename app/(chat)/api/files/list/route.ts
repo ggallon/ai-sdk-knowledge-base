@@ -2,7 +2,7 @@ import { auth } from "@/app/(auth)/auth";
 import { list } from "@vercel/blob";
 
 export async function GET() {
-  let session = await auth();
+  const session = await auth();
 
   if (!session) {
     return Response.redirect("/login");

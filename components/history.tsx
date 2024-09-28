@@ -7,7 +7,7 @@ import useSWR from "swr";
 import Link from "next/link";
 import cx from "classnames";
 import { useParams, usePathname } from "next/navigation";
-import { Chat } from "@/schema";
+import type { Chat } from "@/drizzle/schema";
 import { fetcher } from "@/utils/functions";
 
 export const History = () => {
