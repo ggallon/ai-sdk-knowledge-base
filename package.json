@@ -26,7 +26,7 @@
     "drizzle-orm": "0.33.0",
     "framer-motion": "11.9.0",
     "next": "15.0.0-canary.152",
-    "next-auth": "5.0.0-beta.21",
+    "next-auth": "5.0.0-beta.22",
     "pdf-parse": "1.1.1",
     "postgres": "3.4.4",
     "react": "19.0.0-rc-7771d3a7-20240827",
