@@ -18,13 +18,17 @@ export default function Page() {
   );
 
   useEffect(() => {
-    if (state.status === "user_exists") {
-      toast.error("Account already exists");
-    } else if (state.status === "failed") {
-      toast.error("Failed to create account");
-    } else if (state.status === "success") {
-      toast.success("Account created successfully");
-      router.refresh();
+    switch (state.status) {
+      case "failed":
+        toast.error("Failed to create account");
+        break;
+      case "user_exists":
+        toast.error("Account already exists");
+        break;
+      case "success":
+        toast.success("Account created successfully");
+        router.refresh();
+        break;
     }
   }, [state, router]);
 
