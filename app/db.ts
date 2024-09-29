@@ -1,16 +1,13 @@
-import { drizzle } from "drizzle-orm/postgres-js";
 import { desc, eq, inArray } from "drizzle-orm";
-import postgres from "postgres";
+import { sql as vercelSql } from "@vercel/postgres";
 import { genSaltSync, hashSync } from "bcrypt-ts";
-import { chat, chunk, user } from "@/schema";
 import type { Chunk } from "@/drizzle/schema";
 import type { CoreMessage } from "ai";
+import { drizzle } from "drizzle-orm/vercel-postgres";
+import * as schema from "@/drizzle/schema";
 
-// Optionally, if not using email/pass login, you can
-// use the Drizzle adapter for Auth.js / NextAuth
-// https://authjs.dev/reference/adapter/drizzle
-let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
-let db = drizzle(client);
+const db = drizzle(vercelSql, { schema });
+const { chat, chunk, UserTable } = schema;
 
 export async function getUser(email: string) {
   return await db.select().from(user).where(eq(user.email, email));
