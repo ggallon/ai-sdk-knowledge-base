@@ -1,62 +1,45 @@
 import Link from "next/link";
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 const NonMemoizedMarkdown = ({ children }: { children: string }) => {
-  const components = {
-    code: ({ node, inline, className, children, ...props }: any) => {
-      const match = /language-(\w+)/.exec(className || "");
-      return !inline && match ? (
-        <pre
-          {...props}
-          className={`${className} mt-2 w-[80dvw] overflow-x-scroll rounded bg-zinc-100 p-2 text-sm md:max-w-[500px] dark:bg-zinc-800`}
-        >
-          <code className={match[1]}>{children}</code>
-        </pre>
-      ) : (
-        <code
-          className={`${className} rounded bg-zinc-100 px-1 py-0.5 text-sm dark:bg-zinc-800`}
-          {...props}
-        >
-          {children}
-        </code>
-      );
-    },
-    ol: ({ node, children, ...props }: any) => {
+  const components: Components = {
+    ol: ({ children, ...props }) => {
       return (
         <ol className="ml-4 list-outside list-decimal" {...props}>
           {children}
         </ol>
       );
     },
-    li: ({ node, children, ...props }: any) => {
+    li: ({ children, ...props }) => {
       return (
         <li className="py-1" {...props}>
           {children}
         </li>
       );
     },
-    ul: ({ node, children, ...props }: any) => {
+    ul: ({ children, ...props }) => {
       return (
         <ul className="ml-4 list-outside list-decimal" {...props}>
           {children}
         </ul>
       );
     },
-    strong: ({ node, children, ...props }: any) => {
+    strong: ({ children, ...props }) => {
       return (
         <span className="font-semibold" {...props}>
           {children}
         </span>
       );
     },
-    a: ({ node, children, ...props }: any) => {
+    a: ({ children, href, ...props }) => {
       return (
         <Link
           className="text-blue-500 hover:underline"
           target="_blank"
           rel="noreferrer"
+          href={href ?? "#"}
           {...props}
         >
           {children}
