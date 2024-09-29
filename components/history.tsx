@@ -1,14 +1,14 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { InfoIcon, MenuIcon, PencilEditIcon } from "./icons";
+import cx from "classnames";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import { usePathname, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import Link from "next/link";
-import cx from "classnames";
-import { useParams, usePathname } from "next/navigation";
-import { Chat } from "@/schema";
+import type { Chat } from "@/drizzle/schema";
 import { fetcher } from "@/utils/functions";
+import { InfoIcon, MenuIcon, PencilEditIcon } from "./icons";
 
 export const History = () => {
   const { id } = useParams();

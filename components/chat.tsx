@@ -1,14 +1,14 @@
 "use client";
 
-import { Message } from "ai";
+import type { Message } from "ai";
 import { useChat } from "ai/react";
+import type { Session } from "next-auth";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Files } from "@/components/files";
-import { AnimatePresence, motion } from "framer-motion";
 import { FileIcon } from "@/components/icons";
 import { Message as PreviewMessage } from "@/components/message";
 import { useScrollToBottom } from "@/components/use-scroll-to-bottom";
-import { Session } from "next-auth";
 
 const suggestedActions = [
   {

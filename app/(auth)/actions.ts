@@ -32,9 +32,9 @@ export const register = async (
   data: RegisterActionState,
   formData: FormData,
 ): Promise<RegisterActionState> => {
-  let email = formData.get("email") as string;
-  let password = formData.get("password") as string;
-  let user = await getUser(email);
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const user = await getUser(email);
 
   if (user.length > 0) {
     return { status: "user_exists" };

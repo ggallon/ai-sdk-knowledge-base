@@ -1,14 +1,13 @@
+import { convertToCoreMessages, streamText } from "ai";
 import { customModel } from "@/ai";
 import { auth } from "@/app/(auth)/auth";
 import { createMessage } from "@/app/db";
-import { convertToCoreMessages, streamText } from "ai";
 
 export async function POST(request: Request) {
   const { id, messages, selectedFilePathnames } = await request.json();
 
   const session = await auth();
-
-  if (!session) {
+  if (!session?.user) {
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -26,7 +25,7 @@ export async function POST(request: Request) {
       await createMessage({
         id,
         messages: [...messages, { role: "assistant", content: text }],
-        author: session.user?.email!,
+        author: session.user?.email ?? "",
       });
     },
     experimental_telemetry: {

@@ -1,6 +1,11 @@
 "use client";
 
+import cx from "classnames";
+import { motion } from "framer-motion";
+import { useRef, useState, type Dispatch, type SetStateAction } from "react";
 import useSWR from "swr";
+import { useOnClickOutside, useWindowSize } from "usehooks-ts";
+import { fetcher } from "@/utils/functions";
 import {
   CheckedSquare,
   InfoIcon,
@@ -9,11 +14,6 @@ import {
   UncheckedSquare,
   UploadIcon,
 } from "./icons";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { fetcher } from "@/utils/functions";
-import cx from "classnames";
-import { motion } from "framer-motion";
-import { useOnClickOutside, useWindowSize } from "usehooks-ts";
 
 export const Files = ({
   selectedFilePathnames,
@@ -150,7 +150,7 @@ export const Files = ({
             </div>
           ) : null}
 
-          {files?.map((file: any) => (
+          {files?.map((file) => (
             <div
               key={file.pathname}
               className={`flex flex-row border-b p-2 dark:border-zinc-700 ${

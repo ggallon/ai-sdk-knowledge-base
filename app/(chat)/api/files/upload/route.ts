@@ -1,16 +1,16 @@
-import { auth } from "@/app/(auth)/auth";
-import { insertChunks } from "@/app/db";
-import { getPdfContentFromUrl } from "@/utils/pdf";
+import { embedMany } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { put } from "@vercel/blob";
-import { embedMany } from "ai";
+import { auth } from "@/app/(auth)/auth";
+import { insertChunks } from "@/app/db";
+import { getPdfContentFromUrl } from "@/utils/pdf";
 
 export async function POST(request: Request) {
   const { searchParams } = new URL(request.url);
   const filename = searchParams.get("filename");
 
-  let session = await auth();
+  const session = await auth();
 
   if (!session) {
     return Response.redirect("/login");

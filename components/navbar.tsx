@@ -1,9 +1,9 @@
-import { auth, signOut } from "@/app/(auth)/auth";
 import Link from "next/link";
+import { auth, signOut } from "@/app/(auth)/auth";
 import { History } from "./history";
 
 export const Navbar = async () => {
-  let session = await auth();
+  const session = await auth();
 
   return (
     <div className="absolute left-0 top-0 z-30 flex w-dvw flex-row items-center justify-between border-b bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
