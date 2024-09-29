@@ -8,7 +8,7 @@ import {
   json,
 } from "drizzle-orm/pg-core";
 
-export const user = pgTable("User", {
+export const UserTable = pgTable("User", {
   email: varchar("email", { length: 64 }).primaryKey().notNull(),
   password: varchar("password", { length: 64 }),
 });
@@ -19,7 +19,7 @@ export const chat = pgTable("Chat", {
   messages: json("messages").notNull(),
   author: varchar("author", { length: 64 })
     .notNull()
-    .references(() => user.email),
+    .references(() => UserTable.email),
 });
 
 export const chunk = pgTable("Chunk", {
@@ -34,3 +34,7 @@ export type Chat = Omit<typeof chat.$inferSelect, "messages"> & {
 };
 
 export type Chunk = typeof chunk.$inferSelect;
+
+export type User = Omit<typeof UserTable.$inferSelect, "password">;
+export type UserSelectAll = typeof UserTable.$inferSelect;
+export type UserInsert = typeof UserTable.$inferInsert;

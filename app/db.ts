@@ -1,23 +1,32 @@
-import { desc, eq, inArray } from "drizzle-orm";
 import { sql as vercelSql } from "@vercel/postgres";
+import type { Message } from "ai";
 import { genSaltSync, hashSync } from "bcrypt-ts";
-import type { Chunk } from "@/drizzle/schema";
-import type { CoreMessage } from "ai";
+import { desc, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import * as schema from "@/drizzle/schema";
+import type { Chat, Chunk, User, UserSelectAll } from "@/drizzle/schema";
 
 const db = drizzle(vercelSql, { schema });
 const { chat, chunk, UserTable } = schema;
 
-export async function getUser(email: string) {
-  return await db.select().from(user).where(eq(user.email, email));
+export async function getUser(email: string): Promise<User | undefined> {
+  return await db.query.UserTable.findFirst({
+    columns: { email: true },
+    where: eq(UserTable.email, email),
+  });
+}
+
+export async function getUserWithPassword(
+  email: string,
+): Promise<UserSelectAll | undefined> {
+  return await db.query.UserTable.findFirst({
+    where: eq(UserTable.email, email),
+  });
 }
 
 export async function createUser(email: string, password: string) {
-  const salt = genSaltSync(10);
-  const hash = hashSync(password, salt);
-
-  return await db.insert(user).values({ email, password: hash });
+  const hash = hashSync(password, genSaltSync(10));
+  return await db.insert(UserTable).values({ email, password: hash });
 }
 
 export async function createMessage({
@@ -26,7 +35,7 @@ export async function createMessage({
   author,
 }: {
   id: string;
-  messages: CoreMessage;
+  messages: Message[];
   author: string;
 }) {
   const selectedChats = await db.select().from(chat).where(eq(chat.id, id));
@@ -48,17 +57,25 @@ export async function createMessage({
   });
 }
 
-export async function getChatsByUser({ email }: { email: string }) {
-  return await db
-    .select()
-    .from(chat)
-    .where(eq(chat.author, email))
-    .orderBy(desc(chat.createdAt));
+export async function getChatsByUser({
+  email,
+}: {
+  email: string;
+}): Promise<Chat[] | undefined> {
+  return (await db.query.chat.findMany({
+    where: eq(chat.author, email),
+    orderBy: desc(chat.createdAt),
+  })) as unknown as Chat[] | undefined;
 }
 
-export async function getChatById({ id }: { id: string }) {
-  const [selectedChat] = await db.select().from(chat).where(eq(chat.id, id));
-  return selectedChat;
+export async function getChatById({
+  id,
+}: {
+  id: string;
+}): Promise<Chat | undefined> {
+  return (await db.query.chat.findFirst({
+    where: eq(chat.id, id),
+  })) as unknown as Chat | undefined;
 }
 
 export async function insertChunks({ chunks }: { chunks: Chunk[] }) {
@@ -68,7 +85,7 @@ export async function insertChunks({ chunks }: { chunks: Chunk[] }) {
 export async function getChunksByFilePaths({
   filePaths,
 }: {
-  filePaths: Array<string>;
+  filePaths: string[];
 }) {
   return await db
     .select()
