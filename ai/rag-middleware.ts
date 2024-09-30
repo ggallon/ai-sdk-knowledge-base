@@ -1,6 +1,5 @@
 import { auth } from "@/app/(auth)/auth";
 import { getChunksByFilePaths } from "@/drizzle/query/chunk";
-import { openai } from "@ai-sdk/openai";
 import {
   cosineSimilarity,
   embed,
@@ -9,6 +8,7 @@ import {
   generateText,
 } from "ai";
 import { z } from "zod";
+import { registry } from "./setup-registry";
 
 // schema for validating the custom provider metadata
 const selectionSchema = z.object({
@@ -50,7 +50,7 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
     // Classify the user prompt as whether it requires more context or not
     const { object: classification } = await generateObject({
       // fast model for classification:
-      model: openai("gpt-4o-mini", { structuredOutputs: true }),
+      model: registry.languageModel("openai:gpt-4o-mini-structured"),
       output: "enum",
       enum: ["question", "statement", "other"],
       system: "classify the user message as a question, statement, or other",
@@ -66,14 +66,14 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
     // Use hypothetical document embeddings:
     const { text: hypotheticalAnswer } = await generateText({
       // fast model for generating hypothetical answer:
-      model: openai("gpt-4o-mini", { structuredOutputs: true }),
+      model: registry.languageModel("openai:gpt-4o-mini-structured"),
       system: "Answer the users question:",
       prompt: lastUserMessageContent,
     });
 
     // Embed the hypothetical answer
     const { embedding: hypotheticalAnswerEmbedding } = await embed({
-      model: openai.embedding("text-embedding-3-small"),
+      model: registry.textEmbeddingModel("openai:text-embedding-3-small"),
       value: hypotheticalAnswer,
     });
 
