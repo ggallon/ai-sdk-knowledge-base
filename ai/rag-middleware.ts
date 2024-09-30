@@ -21,15 +21,14 @@ const selectionSchema = z.object({
 export const ragMiddleware: LanguageModelV1Middleware = {
   transformParams: async ({ params }) => {
     const session = await auth();
-
     if (!session) return params; // no user session
 
     const { prompt: messages, providerMetadata } = params;
-
     // validate the provider metadata with Zod:
     const { success, data } = selectionSchema.safeParse(providerMetadata);
-
-    if (!success) return params; // no files selected
+    if (!success) {
+      return params; // no files selected
+    }
 
     const recentMessage = messages.pop();
 
