@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcrypt-ts";
-import { getUserWithPassword } from "@/app/db";
+import { getUserWithPassword } from "@/drizzle/query/user";
 import { authConfig } from "./auth.config";
 
 export const {

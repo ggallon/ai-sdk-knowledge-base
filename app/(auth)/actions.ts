@@ -1,6 +1,6 @@
 "use server";
 
-import { createUser, getUser } from "../db";
+import { createUser, getUser } from "@/drizzle/query/user";
 import { signIn } from "./auth";
 
 export interface LoginActionState {
