@@ -1,5 +1,6 @@
 "use client";
 
+import type { ListBlobResultBlob } from "@vercel/blob";
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { useRef, useState, type Dispatch, type SetStateAction } from "react";
@@ -14,6 +15,8 @@ import {
   UncheckedSquare,
   UploadIcon,
 } from "./icons";
+
+type FilesListResult = Pick<ListBlobResultBlob, "pathname" | "url">;
 
 export const Files = ({
   selectedFilePathnames,
@@ -31,11 +34,7 @@ export const Files = ({
     data: files,
     mutate,
     isLoading,
-  } = useSWR<
-    Array<{
-      pathname: string;
-    }>
-  >("api/files/list", fetcher, {
+  } = useSWR<FilesListResult[]>("api/files/list", fetcher, {
     fallbackData: [],
   });
 
@@ -95,16 +94,20 @@ export const Files = ({
               if (file) {
                 setUploadQueue((currentQueue) => [...currentQueue, file.name]);
 
-                await fetch(`/api/files/upload?filename=${file.name}`, {
-                  method: "POST",
-                  body: file,
-                });
+                const response = await fetch(
+                  `/api/files/upload?filename=${file.name}`,
+                  {
+                    method: "POST",
+                    body: file,
+                  },
+                );
+                const newFile = (await response.json()) as FilesListResult;
 
                 setUploadQueue((currentQueue) =>
                   currentQueue.filter((filename) => filename !== file.name),
                 );
 
-                mutate([...(files || []), { pathname: file.name }]);
+                mutate([...(files || []), { ...newFile }]);
               }
             }}
           />

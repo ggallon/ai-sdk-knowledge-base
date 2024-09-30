@@ -18,8 +18,8 @@ export async function GET() {
 
   return Response.json(
     blobs.map((blob) => ({
-      ...blob,
       pathname: blob.pathname.replace(`${user.email}/`, ""),
+      url: blob.url,
     })),
   );
 }

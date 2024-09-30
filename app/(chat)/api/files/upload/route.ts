@@ -26,9 +26,13 @@ export async function POST(request: Request) {
     return new Response("Request body is empty", { status: 400 });
   }
 
-  const { downloadUrl } = await put(`${user.email}/${filename}`, request.body, {
-    access: "public",
-  });
+  const { downloadUrl, pathname, url } = await put(
+    `${user.email}/${filename}`,
+    request.body,
+    {
+      access: "public",
+    },
+  );
 
   const content = await getPdfContentFromUrl(downloadUrl);
   const textSplitter = new RecursiveCharacterTextSplitter({
@@ -50,5 +54,5 @@ export async function POST(request: Request) {
     })),
   });
 
-  return Response.json({});
+  return Response.json({ pathname, url });
 }
