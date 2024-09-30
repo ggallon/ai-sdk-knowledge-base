@@ -31,8 +31,6 @@ export const ragMiddleware: LanguageModelV1Middleware = {
 
     if (!success) return params; // no files selected
 
-    const selection = data.files.selection;
-
     const recentMessage = messages.pop();
 
     if (!recentMessage || recentMessage.role !== "user") {
@@ -80,7 +78,9 @@ export const ragMiddleware: LanguageModelV1Middleware = {
 
     // find relevant chunks based on the selection
     const chunksBySelection = await getChunksByFilePaths({
-      filePaths: selection.map((path) => `${session.user?.email}/${path}`),
+      filePaths: data.files.selection.map(
+        (path) => `${session.user?.email}/${path}`,
+      ),
     });
 
     const chunksWithSimilarity = chunksBySelection.map((chunk) => ({
