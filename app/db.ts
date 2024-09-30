@@ -1,13 +1,16 @@
-import { sql as vercelSql } from "@vercel/postgres";
 import type { Message } from "ai";
 import { genSaltSync, hashSync } from "bcrypt-ts";
 import { desc, eq, inArray } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/vercel-postgres";
-import * as schema from "@/drizzle/schema";
-import type { Chat, Chunk, User, UserSelectAll } from "@/drizzle/schema";
-
-const db = drizzle(vercelSql, { schema });
-const { chat, chunk, UserTable } = schema;
+import { db } from "@/drizzle/db";
+import {
+  chat,
+  chunk,
+  UserTable,
+  type Chat,
+  type Chunk,
+  type User,
+  type UserSelectAll,
+} from "@/drizzle/schema";
 
 export async function getUser(email: string): Promise<User | undefined> {
   return await db.query.UserTable.findFirst({
