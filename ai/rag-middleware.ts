@@ -31,13 +31,13 @@ export const ragMiddleware: LanguageModelV1Middleware = {
     }
 
     const recentMessage = messages.pop();
+    if (!recentMessage) {
+      return params; // no message
+    }
 
-    if (!recentMessage || recentMessage.role !== "user") {
-      if (recentMessage) {
-        messages.push(recentMessage);
-      }
-
-      return params;
+    if (recentMessage.role !== "user") {
+      messages.push(recentMessage);
+      return params; // last message did not come from the user
     }
 
     const lastUserMessageContent = recentMessage.content
