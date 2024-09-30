@@ -1,20 +1,19 @@
 import { eq, inArray } from "drizzle-orm";
 import { db } from "@/drizzle/db";
-import { chunk, type Chunk } from "@/drizzle/schema";
+import { ChunkTable, type Chunk, type ChunkInsert } from "@/drizzle/schema";
 
-export async function insertChunks({ chunks }: { chunks: Chunk[] }) {
-  return await db.insert(chunk).values(chunks);
+export async function insertChunks({ chunks }: { chunks: ChunkInsert[] }) {
+  return await db.insert(ChunkTable).values(chunks);
 }
 
 export async function getChunksByFilePaths({
   filePaths,
 }: {
   filePaths: string[];
-}) {
-  return await db
-    .select()
-    .from(chunk)
-    .where(inArray(chunk.filePath, filePaths));
+}): Promise<Chunk[]> {
+  return await db.query.ChunkTable.findMany({
+    where: inArray(ChunkTable.filePath, filePaths),
+  });
 }
 
 export async function deleteChunksByFilePath({
@@ -22,5 +21,5 @@ export async function deleteChunksByFilePath({
 }: {
   filePath: string;
 }) {
-  return await db.delete(chunk).where(eq(chunk.filePath, filePath));
+  return await db.delete(ChunkTable).where(eq(ChunkTable.filePath, filePath));
 }

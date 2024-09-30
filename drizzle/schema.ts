@@ -22,7 +22,7 @@ export const chat = pgTable("Chat", {
     .references(() => UserTable.email),
 });
 
-export const chunk = pgTable("Chunk", {
+export const ChunkTable = pgTable("Chunk", {
   id: text("id").primaryKey().notNull(),
   filePath: text("filePath").notNull(),
   content: text("content").notNull(),
@@ -33,7 +33,8 @@ export type Chat = Omit<typeof chat.$inferSelect, "messages"> & {
   messages: Message[];
 };
 
-export type Chunk = typeof chunk.$inferSelect;
+export type Chunk = typeof ChunkTable.$inferSelect;
+export type ChunkInsert = typeof ChunkTable.$inferInsert;
 
 export type User = Omit<typeof UserTable.$inferSelect, "password">;
 export type UserSelectAll = typeof UserTable.$inferSelect;
