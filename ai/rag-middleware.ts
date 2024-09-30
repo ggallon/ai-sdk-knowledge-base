@@ -1,13 +1,13 @@
-import { auth } from "@/app/(auth)/auth";
-import { getChunksByFilePaths } from "@/drizzle/query/chunk";
 import {
   cosineSimilarity,
   embed,
-  Experimental_LanguageModelV1Middleware,
   generateObject,
   generateText,
+  type Experimental_LanguageModelV1Middleware as LanguageModelV1Middleware,
 } from "ai";
 import { z } from "zod";
+import { auth } from "@/app/(auth)/auth";
+import { getChunksByFilePaths } from "@/drizzle/query/chunk";
 import { registry } from "./setup-registry";
 
 // schema for validating the custom provider metadata
@@ -17,7 +17,7 @@ const selectionSchema = z.object({
   }),
 });
 
-export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
+export const ragMiddleware: LanguageModelV1Middleware = {
   transformParams: async ({ params }) => {
     const session = await auth();
 
