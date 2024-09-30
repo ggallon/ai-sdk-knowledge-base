@@ -13,7 +13,7 @@ export const UserTable = pgTable("User", {
   password: varchar("password", { length: 64 }),
 });
 
-export const chat = pgTable("Chat", {
+export const ChatTable = pgTable("Chat", {
   id: text("id").primaryKey().notNull(),
   createdAt: timestamp("createdAt").notNull(),
   messages: json("messages").notNull(),
@@ -29,9 +29,10 @@ export const ChunkTable = pgTable("Chunk", {
   embedding: real("embedding").array().notNull(),
 });
 
-export type Chat = Omit<typeof chat.$inferSelect, "messages"> & {
+export type Chat = Omit<typeof ChatTable.$inferSelect, "messages"> & {
   messages: Message[];
 };
+export type ChatInsert = Omit<typeof ChatTable.$inferSelect, "createdAt">;
 
 export type Chunk = typeof ChunkTable.$inferSelect;
 export type ChunkInsert = typeof ChunkTable.$inferInsert;

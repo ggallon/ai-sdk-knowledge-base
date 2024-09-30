@@ -1,7 +1,7 @@
 import { convertToCoreMessages, streamText } from "ai";
 import { customModel } from "@/ai";
 import { auth } from "@/app/(auth)/auth";
-import { createMessage } from "@/drizzle/query/chat";
+import { createChatMessage } from "@/drizzle/query/chat";
 
 export async function POST(request: Request) {
   const { id, messages, selectedFilePathnames } = await request.json();
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       },
     },
     onFinish: async ({ text }) => {
-      await createMessage({
+      await createChatMessage({
         id,
         messages: [...messages, { role: "assistant", content: text }],
         author: session.user?.email ?? "",
