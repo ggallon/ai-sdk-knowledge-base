@@ -1,5 +1,5 @@
 import { auth } from "@/app/(auth)/auth";
-import { getChatsByUser } from "@/app/db";
+import { getChatsByUser } from "@/drizzle/query/chat";
 
 export async function GET() {
   const session = await auth();

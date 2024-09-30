@@ -1,6 +1,6 @@
 "use server";
 
-import { createUser, getUser } from "../db";
+import { createUser, getUser } from "@/drizzle/query/user";
 import { signIn } from "./auth";
 
 export interface LoginActionState {
@@ -36,7 +36,7 @@ export const register = async (
   const password = formData.get("password") as string;
   const user = await getUser(email);
 
-  if (user.length > 0) {
+  if (user) {
     return { status: "user_exists" };
   } else {
     await createUser(email, password);

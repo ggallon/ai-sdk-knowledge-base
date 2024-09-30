@@ -3,7 +3,7 @@ import { openai } from "@ai-sdk/openai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { put } from "@vercel/blob";
 import { auth } from "@/app/(auth)/auth";
-import { insertChunks } from "@/app/db";
+import { insertChunks } from "@/drizzle/query/chunk";
 import { getPdfContentFromUrl } from "@/utils/pdf";
 
 export async function POST(request: Request) {
