@@ -1,3 +1,4 @@
+import type { LanguageModelV1TextPart } from "@ai-sdk/provider";
 import {
   cosineSimilarity,
   embed,
@@ -104,10 +105,13 @@ export const ragMiddleware: LanguageModelV1Middleware = {
           type: "text",
           text: "Here is some relevant information that you can use to answer the question:",
         },
-        ...topKChunks.map((chunk) => ({
-          type: "text" as const,
-          text: chunk.content,
-        })),
+        ...topKChunks.map(
+          (chunk) =>
+            ({
+              type: "text",
+              text: chunk.content,
+            }) as LanguageModelV1TextPart,
+        ),
       ],
     });
 
