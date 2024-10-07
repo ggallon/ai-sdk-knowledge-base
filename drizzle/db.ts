@@ -1,8 +1,7 @@
-import { sql } from "@vercel/postgres";
-import { drizzle } from "drizzle-orm/vercel-postgres";
+import { drizzle } from "drizzle-orm/connect";
 import * as schema from "./schema";
 
-export const db = drizzle(sql, {
+export const db = drizzle("vercel-postgres", {
   schema,
   logger: process.env.NODE_ENV === "development",
 });
