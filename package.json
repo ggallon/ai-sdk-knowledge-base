@@ -65,6 +65,7 @@
       "ai>@ai-sdk/solid": "-",
       "ai>@ai-sdk/svelte": "-",
       "ai>@ai-sdk/vue": "-",
+      "drizzle-orm>@libsql/client": "-",
       "swr": "2.2.6-beta.4"
     }
   }
