@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { compare } from "bcrypt-ts";
+import { isPasswordValid } from "@/utils/hash";
 import { getUserWithPassword } from "@/drizzle/query/user";
 import { authConfig } from "./auth.config";
 
@@ -22,9 +22,9 @@ export const {
         const user = await getUserWithPassword(credentials.email as string);
         if (!user) return null;
 
-        const passwordsMatch = await compare(
+        const passwordsMatch = await isPasswordValid(
           credentials.password as string,
-          user.password!,
+          user.password,
         );
         if (passwordsMatch) {
           return { email: user.email };
