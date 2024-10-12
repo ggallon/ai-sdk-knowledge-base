@@ -1,5 +1,5 @@
 {
-  "id": "3f8197c3-143f-4add-b4d7-2c893c46de0f",
+  "id": "8df9cdb4-485b-47a1-8bb9-648a79120e6a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,25 +10,32 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
+          "notNull": true
+        },
+        "publicId": {
+          "name": "publicId",
+          "type": "varchar(32)",
+          "primaryKey": false,
           "notNull": true
         },
         "createdAt": {
           "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "author": {
+          "name": "author",
+          "type": "varchar(64)",
+          "primaryKey": false,
           "notNull": true
         },
         "messages": {
           "name": "messages",
           "type": "json",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "author": {
-          "name": "author",
-          "type": "varchar(64)",
           "primaryKey": false,
           "notNull": true
         }
@@ -45,12 +52,20 @@
           "columnsTo": [
             "email"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "Chat_publicId_unique": {
+          "name": "Chat_publicId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "publicId"
+          ]
+        }
+      }
     },
     "public.Chunk": {
       "name": "Chunk",
@@ -58,8 +73,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "chunkRef": {
+          "name": "chunkRef",
+          "type": "text",
+          "primaryKey": false,
           "notNull": true
         },
         "filePath": {
@@ -79,9 +107,32 @@
           "type": "real[]",
           "primaryKey": false,
           "notNull": true
+        },
+        "embeddingVector": {
+          "name": "embeddingVector",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "embeddingVectorIndex": {
+          "name": "embeddingVectorIndex",
+          "columns": [
+            {
+              "expression": "embeddingVector",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
@@ -90,23 +141,44 @@
       "name": "User",
       "schema": "",
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
         "email": {
           "name": "email",
           "type": "varchar(64)",
-          "primaryKey": true,
+          "primaryKey": false,
           "notNull": true
         },
         "password": {
           "name": "password",
           "type": "varchar(64)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "User_email_unique": {
+          "name": "User_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
     }
   },
   "enums": {},
