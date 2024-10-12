@@ -11,6 +11,4 @@ export const db = drizzle(customVercelPool, {
   logger: process.env.NODE_ENV === "development",
 });
 
-export default db;
-
 export type DrizzleClient = typeof db;
