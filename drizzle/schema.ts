@@ -5,12 +5,17 @@ import {
   text,
   real,
   timestamp,
+  uuid,
   json,
 } from "drizzle-orm/pg-core";
 
 export const UserTable = pgTable("User", {
-  email: varchar("email", { length: 64 }).primaryKey().notNull(),
-  password: varchar("password", { length: 64 }),
+  id: uuid("id")
+    .primaryKey()
+    .$defaultFn(() => uuidv4()),
+  email: varchar("email", { length: 64 }).unique().notNull(),
+  password: varchar("password", { length: 64 }).notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
 
 export const ChatTable = pgTable("Chat", {
@@ -37,6 +42,5 @@ export type ChatInsert = Omit<typeof ChatTable.$inferSelect, "createdAt">;
 export type Chunk = typeof ChunkTable.$inferSelect;
 export type ChunkInsert = typeof ChunkTable.$inferInsert;
 
-export type User = Omit<typeof UserTable.$inferSelect, "password">;
-export type UserSelectAll = typeof UserTable.$inferSelect;
+export type User = typeof UserTable.$inferSelect;
 export type UserInsert = typeof UserTable.$inferInsert;
