@@ -4,5 +4,7 @@ import { Chat } from "@/components/chat";
 
 export default async function Page() {
   const session = await auth();
-  return <Chat id={generateId()} initialMessages={[]} session={session} />;
+  return (
+    <Chat publicId={generateId()} initialMessages={[]} session={session} />
+  );
 }

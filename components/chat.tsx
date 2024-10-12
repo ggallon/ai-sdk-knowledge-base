@@ -24,11 +24,11 @@ const suggestedActions = [
 ];
 
 export function Chat({
-  id,
+  publicId,
   initialMessages,
   session,
 }: {
-  id: string;
+  publicId: string;
   initialMessages: Array<Message>;
   session: Session | null;
 }) {
@@ -64,10 +64,10 @@ export function Chat({
   }, [session]);
 
   const { messages, handleSubmit, input, setInput, append } = useChat({
-    body: { id, selectedFilePathnames },
+    body: { publicId, selectedFilePathnames },
     initialMessages,
     onFinish: () => {
-      window.history.replaceState({}, "", `/${id}`);
+      window.history.replaceState({}, "", `/${publicId}`);
     },
   });
 
@@ -83,7 +83,7 @@ export function Chat({
         >
           {messages.map((message, index) => (
             <PreviewMessage
-              key={`${id}-${index}`}
+              key={`${publicId}-${index}`}
               role={message.role}
               content={message.content}
             />

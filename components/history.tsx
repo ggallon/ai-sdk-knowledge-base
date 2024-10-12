@@ -111,12 +111,12 @@ export const History = () => {
                 {history &&
                   history.map((chat) => (
                     <Link
-                      href={`/${chat.id}`}
-                      key={chat.id}
+                      href={`/${chat.publicId}`}
+                      key={chat.publicId}
                       className={cx(
                         "border-b p-2 text-sm last-of-type:border-b-0 hover:bg-zinc-200 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-700",
                         {
-                          "bg-zinc-200 dark:bg-zinc-700": id === chat.id,
+                          "bg-zinc-200 dark:bg-zinc-700": id === chat.publicId,
                         },
                       )}
                     >

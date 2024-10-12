@@ -47,10 +47,11 @@ export async function POST(request: Request) {
 
   await insertChunks({
     chunks: chunkedContent.map((chunk, i) => ({
-      id: `${user.email}/${filename}/${i}`,
+      chunkRef: `${user.email}/${filename}/${i}`,
       filePath: `${user.email}/${filename}`,
       content: chunk.pageContent,
       embedding: embeddings[i],
+      embeddingVector: embeddings[i],
     })),
   });
 

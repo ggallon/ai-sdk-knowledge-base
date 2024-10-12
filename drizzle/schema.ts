@@ -1,42 +1,66 @@
 import type { Message } from "ai";
 import {
   pgTable,
-  varchar,
-  text,
+  index,
   real,
+  text,
   timestamp,
+  uuid,
+  varchar,
+  vector,
   json,
 } from "drizzle-orm/pg-core";
+import { v4 as uuidv4 } from "uuid";
 
 export const UserTable = pgTable("User", {
-  email: varchar("email", { length: 64 }).primaryKey().notNull(),
-  password: varchar("password", { length: 64 }),
+  id: uuid("id")
+    .primaryKey()
+    .$defaultFn(() => uuidv4()),
+  email: varchar("email", { length: 64 }).unique().notNull(),
+  password: varchar("password", { length: 64 }).notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
 
 export const ChatTable = pgTable("Chat", {
-  id: text("id").primaryKey().notNull(),
-  createdAt: timestamp("createdAt").notNull(),
-  messages: json("messages").notNull(),
+  id: uuid("id")
+    .primaryKey()
+    .$defaultFn(() => uuidv4()),
+  publicId: varchar("publicId", { length: 32 }).unique().notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
   author: varchar("author", { length: 64 })
     .notNull()
-    .references(() => UserTable.email),
+    .references(() => UserTable.email, { onDelete: "cascade" }),
+  messages: json("messages").notNull(),
 });
 
-export const ChunkTable = pgTable("Chunk", {
-  id: text("id").primaryKey().notNull(),
-  filePath: text("filePath").notNull(),
-  content: text("content").notNull(),
-  embedding: real("embedding").array().notNull(),
-});
+export const ChunkTable = pgTable(
+  "Chunk",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .$defaultFn(() => uuidv4()),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    chunkRef: text("chunkRef").notNull(),
+    filePath: text("filePath").notNull(),
+    content: text("content").notNull(),
+    embedding: real("embedding").array().notNull(),
+    embeddingVector: vector("embeddingVector", { dimensions: 1536 }),
+  },
+  (table) => ({
+    embeddingIndex: index("embeddingVectorIndex").using(
+      "hnsw",
+      table.embeddingVector.op("vector_cosine_ops"),
+    ),
+  }),
+);
 
 export type Chat = Omit<typeof ChatTable.$inferSelect, "messages"> & {
   messages: Message[];
 };
-export type ChatInsert = Omit<typeof ChatTable.$inferSelect, "createdAt">;
+export type ChatInsert = typeof ChatTable.$inferInsert;
 
-export type Chunk = typeof ChunkTable.$inferSelect;
+export type Chunk = Omit<typeof ChunkTable.$inferSelect, "embeddingVector">;
 export type ChunkInsert = typeof ChunkTable.$inferInsert;
 
-export type User = Omit<typeof UserTable.$inferSelect, "password">;
-export type UserSelectAll = typeof UserTable.$inferSelect;
+export type User = typeof UserTable.$inferSelect;
 export type UserInsert = typeof UserTable.$inferInsert;
