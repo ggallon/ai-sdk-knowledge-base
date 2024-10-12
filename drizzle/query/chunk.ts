@@ -9,9 +9,10 @@ export async function insertChunks({ chunks }: { chunks: ChunkInsert[] }) {
 export async function getChunksByFilePaths({
   filePaths,
 }: {
-  filePaths: string[];
-}): Promise<Chunk[]> {
+  filePaths: Chunk["filePath"][];
+}): Promise<Pick<Chunk, "content" | "embedding">[]> {
   return await db.query.ChunkTable.findMany({
+    columns: { content: true, embedding: true },
     where: inArray(ChunkTable.filePath, filePaths),
   });
 }
@@ -19,7 +20,7 @@ export async function getChunksByFilePaths({
 export async function deleteChunksByFilePath({
   filePath,
 }: {
-  filePath: string;
+  filePath: Chunk["filePath"];
 }) {
   return await db.delete(ChunkTable).where(eq(ChunkTable.filePath, filePath));
 }
