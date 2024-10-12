@@ -2,33 +2,40 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/drizzle/db";
 import { ChatTable, type Chat, type ChatInsert } from "@/drizzle/schema";
 
-export async function createChatMessage({ id, messages, author }: ChatInsert) {
-  const existingChat = await getChatById({ id });
+export async function createChatMessage({
+  publicId,
+  messages,
+  author,
+}: ChatInsert) {
+  let existingChat: Chat | undefined = undefined;
 
-  if (existingChat) {
+  if (publicId) {
+    existingChat = await getChatByPublicId({ publicId });
+  }
+
+  if (publicId && existingChat) {
     return await db
       .update(ChatTable)
       .set({
         messages: JSON.stringify(messages),
       })
-      .where(eq(ChatTable.id, id));
+      .where(eq(ChatTable.id, existingChat.id));
   }
 
   return await db.insert(ChatTable).values({
-    id,
-    createdAt: new Date(),
+    publicId,
     messages: JSON.stringify(messages),
     author,
   });
 }
 
-export async function getChatById({
-  id,
+export async function getChatByPublicId({
+  publicId,
 }: {
-  id: string;
+  publicId: Chat["publicId"];
 }): Promise<Chat | undefined> {
   return (await db.query.ChatTable.findFirst({
-    where: eq(ChatTable.id, id),
+    where: eq(ChatTable.publicId, publicId),
   })) as unknown as Chat | undefined;
 }
 

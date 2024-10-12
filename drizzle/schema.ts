@@ -19,12 +19,15 @@ export const UserTable = pgTable("User", {
 });
 
 export const ChatTable = pgTable("Chat", {
-  id: text("id").primaryKey().notNull(),
-  createdAt: timestamp("createdAt").notNull(),
-  messages: json("messages").notNull(),
+  id: uuid("id")
+    .primaryKey()
+    .$defaultFn(() => uuidv4()),
+  publicId: varchar("publicId", { length: 32 }).unique().notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
   author: varchar("author", { length: 64 })
     .notNull()
-    .references(() => UserTable.email),
+    .references(() => UserTable.email, { onDelete: "cascade" }),
+  messages: json("messages").notNull(),
 });
 
 export const ChunkTable = pgTable("Chunk", {
@@ -37,7 +40,7 @@ export const ChunkTable = pgTable("Chunk", {
 export type Chat = Omit<typeof ChatTable.$inferSelect, "messages"> & {
   messages: Message[];
 };
-export type ChatInsert = Omit<typeof ChatTable.$inferSelect, "createdAt">;
+export type ChatInsert = typeof ChatTable.$inferInsert;
 
 export type Chunk = typeof ChunkTable.$inferSelect;
 export type ChunkInsert = typeof ChunkTable.$inferInsert;

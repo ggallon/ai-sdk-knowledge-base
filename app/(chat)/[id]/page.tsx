@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth } from "@/app/(auth)/auth";
 import { Chat as PreviewChat } from "@/components/chat";
-import { getChatById } from "@/drizzle/query/chat";
+import { getChatByPublicId } from "@/drizzle/query/chat";
 
 interface PageProps {
   params: Promise<{
@@ -11,7 +11,7 @@ interface PageProps {
 
 export default async function Page(props: PageProps) {
   const { id } = await props.params;
-  const chat = await getChatById({ id });
+  const chat = await getChatByPublicId({ publicId: id });
 
   if (!chat) {
     notFound();
@@ -25,7 +25,7 @@ export default async function Page(props: PageProps) {
 
   return (
     <PreviewChat
-      id={chat.id}
+      publicId={chat.publicId}
       initialMessages={chat.messages}
       session={session}
     />

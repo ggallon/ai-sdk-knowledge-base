@@ -4,7 +4,7 @@ import { auth } from "@/app/(auth)/auth";
 import { createChatMessage } from "@/drizzle/query/chat";
 
 export async function POST(request: Request) {
-  const { id, messages, selectedFilePathnames } = await request.json();
+  const { publicId, messages, selectedFilePathnames } = await request.json();
 
   const session = await auth();
   if (!session?.user) {
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     },
     onFinish: async ({ text }) => {
       await createChatMessage({
-        id,
+        publicId,
         messages: [...messages, { role: "assistant", content: text }],
         author: session.user?.email ?? "",
       });
