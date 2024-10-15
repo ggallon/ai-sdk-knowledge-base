@@ -6,7 +6,8 @@ const customVercelPool = createPool({
   connectionString: process.env.DATABASE_URL,
 });
 
-export const db = drizzle(customVercelPool, {
+export const db = drizzle({
+  client: customVercelPool,
   schema,
   logger: process.env.NODE_ENV === "development",
 });
