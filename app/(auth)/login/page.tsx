@@ -6,16 +6,13 @@ import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { Form } from "@/components/form";
 import { SubmitButton } from "@/components/submit-button";
-import { login, LoginActionState } from "../actions";
+import { login, type AuthActionState } from "../actions";
 
-export default function Page() {
+export default function LoginPage() {
   const router = useRouter();
-  const [state, formAction] = useActionState<LoginActionState, FormData>(
-    login,
-    {
-      status: "idle",
-    },
-  );
+  const [state, formAction] = useActionState<AuthActionState, FormData>(login, {
+    status: "idle",
+  });
 
   useEffect(() => {
     if (state.status === "failed") {

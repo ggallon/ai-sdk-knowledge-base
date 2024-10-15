@@ -6,11 +6,11 @@ import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { Form } from "@/components/form";
 import { SubmitButton } from "@/components/submit-button";
-import { register, RegisterActionState } from "../actions";
+import { register, type AuthActionState } from "../actions";
 
-export default function Page() {
+export default function RegisterPage() {
   const router = useRouter();
-  const [state, formAction] = useActionState<RegisterActionState, FormData>(
+  const [state, formAction] = useActionState<AuthActionState, FormData>(
     register,
     {
       status: "idle",
