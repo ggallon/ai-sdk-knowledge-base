@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { isPasswordValid } from "@/utils/hash";
 import { getUserWithPassword } from "@/drizzle/query/user";
 import { authConfig } from "./auth.config";
+import { authSchema } from "./auth-schema";
 
 export const {
   handlers: { GET, POST },
@@ -15,17 +16,16 @@ export const {
     Credentials({
       credentials: { email: {}, password: {} },
       async authorize(credentials) {
-        if (!credentials.email || !credentials.password) {
+        const validatedFields = authSchema.safeParse(credentials);
+        if (!validatedFields.success) {
           return null;
         }
 
-        const user = await getUserWithPassword(credentials.email as string);
+        const { email, password } = validatedFields.data;
+        const user = await getUserWithPassword(email);
         if (!user) return null;
 
-        const passwordsMatch = await isPasswordValid(
-          credentials.password as string,
-          user.password,
-        );
+        const passwordsMatch = await isPasswordValid(password, user.password);
         if (passwordsMatch) {
           return { email: user.email };
         }

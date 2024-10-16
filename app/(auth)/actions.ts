@@ -2,19 +2,25 @@
 
 import { createUser, getUser } from "@/drizzle/query/user";
 import { signIn } from "./auth";
+import { authSchema } from "./auth-schema";
 
-export interface LoginActionState {
-  status: "idle" | "in_progress" | "success" | "failed";
+export interface AuthActionState {
+  status: "idle" | "in_progress" | "success" | "failed" | "user_exists";
 }
 
 export const login = async (
-  data: LoginActionState,
+  data: AuthActionState,
   formData: FormData,
-): Promise<LoginActionState> => {
+): Promise<AuthActionState> => {
   try {
+    const validatedFields = authSchema.safeParse(Object.fromEntries(formData));
+    if (!validatedFields.success) {
+      return { status: "failed" };
+    }
+
     await signIn("credentials", {
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
+      email: validatedFields.data.email,
+      password: validatedFields.data.password,
       redirect: false,
     });
 
@@ -24,27 +30,30 @@ export const login = async (
   }
 };
 
-export interface RegisterActionState {
-  status: "idle" | "in_progress" | "success" | "failed" | "user_exists";
-}
-
 export const register = async (
-  data: RegisterActionState,
+  data: AuthActionState,
   formData: FormData,
-): Promise<RegisterActionState> => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const user = await getUser(email);
+): Promise<AuthActionState> => {
+  try {
+    const validatedFields = authSchema.safeParse(Object.fromEntries(formData));
+    if (!validatedFields.success) {
+      return { status: "failed" };
+    }
 
-  if (user) {
-    return { status: "user_exists" };
-  } else {
-    await createUser(email, password);
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-    return { status: "success" };
+    const { email, password } = validatedFields.data;
+    const user = await getUser(email);
+    if (user) {
+      return { status: "user_exists" };
+    } else {
+      await createUser(email, password);
+      await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      return { status: "success" };
+    }
+  } catch {
+    return { status: "failed" };
   }
 };

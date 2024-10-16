@@ -1,12 +1,53 @@
-export function Form({
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
+import type { AuthActionState } from "@/app/(auth)/actions";
+
+export function AuthForm({
+  type,
   action,
   children,
 }: {
-  action: (payload: FormData) => void;
+  type: "login" | "register";
+  action: (
+    data: AuthActionState,
+    formData: FormData,
+  ) => Promise<AuthActionState>;
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const [state, formAction] = useActionState<AuthActionState, FormData>(
+    action,
+    {
+      status: "idle",
+    },
+  );
+
+  useEffect(() => {
+    switch (state.status) {
+      case "failed":
+        if (type === "login") {
+          toast.error("Invalid credentials!");
+        } else {
+          toast.error("Failed to create account");
+        }
+        break;
+      case "success":
+        if (type === "register") {
+          toast.success("Account created successfully");
+        }
+        router.refresh();
+        break;
+      case "user_exists":
+        toast.error("Account already exists");
+        break;
+    }
+  }, [type, state, router]);
+
   return (
-    <form action={action} className="flex flex-col gap-4 px-4 sm:px-16">
+    <form action={formAction} className="flex flex-col gap-4 px-4 sm:px-16">
       <div>
         <label
           htmlFor="email"
