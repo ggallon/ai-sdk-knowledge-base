@@ -71,6 +71,9 @@
       "ai>@ai-sdk/svelte": "-",
       "ai>@ai-sdk/vue": "-",
       "swr": "2.2.6-beta.4"
+    },
+    "patchedDependencies": {
+      "next-auth@5.0.0-beta.22": "patches/next-auth@5.0.0-beta.22.patch"
     }
   },
   "engines": {
