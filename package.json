@@ -24,14 +24,14 @@
     "ai": "3.4.16",
     "bcrypt-ts": "5.0.2",
     "classnames": "2.5.1",
-    "drizzle-orm": "0.35.1",
+    "drizzle-orm": "0.35.2",
     "framer-motion": "12.0.0-alpha.1",
-    "next": "15.0.0-canary.197",
-    "next-auth": "5.0.0-beta.22",
+    "next": "15.0.0-canary.199",
+    "next-auth": "5.0.0-beta.25",
     "pdf-parse": "1.1.1",
     "postgres": "3.4.4",
-    "react": "19.0.0-rc-77b637d6-20241016",
-    "react-dom": "19.0.0-rc-77b637d6-20241016",
+    "react": "19.0.0-rc-bf7e210c-20241017",
+    "react-dom": "19.0.0-rc-bf7e210c-20241017",
     "react-markdown": "9.0.1",
     "remark-gfm": "4.0.0",
     "sonner": "1.5.0",
@@ -48,7 +48,7 @@
     "dotenv-cli": "7.4.2",
     "drizzle-kit": "0.26.2",
     "eslint": "8.57.0",
-    "eslint-config-next": "15.0.0-canary.197",
+    "eslint-config-next": "15.0.0-canary.199",
     "eslint-config-prettier": "9.1.0",
     "postcss": "8.4.47",
     "postcss-load-config": "^6.0.1",
@@ -71,9 +71,6 @@
       "ai>@ai-sdk/svelte": "-",
       "ai>@ai-sdk/vue": "-",
       "swr": "2.2.6-beta.4"
-    },
-    "patchedDependencies": {
-      "next-auth@5.0.0-beta.22": "patches/next-auth@5.0.0-beta.22.patch"
     }
   },
   "engines": {
