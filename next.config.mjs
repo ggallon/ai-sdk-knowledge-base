@@ -53,6 +53,10 @@ const nextConfig = {
         ],
         headers: [
           {
+            key: "Permissions-Policy",
+            value: "microphone=(), geolocation=()",
+          },
+          {
             key: "Content-Security-Policy",
             value: contentSecurityPolicyHeaderValue,
           },
