@@ -57,6 +57,10 @@ const nextConfig = {
             value: "microphone=(), geolocation=()",
           },
           {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
             key: "Content-Security-Policy",
             value: contentSecurityPolicyHeaderValue,
           },
