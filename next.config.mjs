@@ -32,6 +32,14 @@ const nextConfig = {
         /*
          * Match all request paths except for the ones starting with:
          * - api (API routes)
+         */
+        source: "/((?!api).*)",
+        headers: [{ key: "X-Content-Type-Options", value: "nosniff" }],
+      },
+      {
+        /*
+         * Match all request paths except for the ones starting with:
+         * - api (API routes)
          * - _next/image (image optimization files)
          * - _next/static (static files)
          * - favicon.ico, sitemap.xml, robots.txt (metadata files)
