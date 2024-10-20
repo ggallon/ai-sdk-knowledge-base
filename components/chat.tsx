@@ -8,20 +8,8 @@ import { useEffect, useState } from "react";
 import { Files } from "@/components/files";
 import { FileIcon } from "@/components/icons";
 import { Message as PreviewMessage } from "@/components/message";
+import { SuggestedActions } from "@/components/suggested-actions";
 import { useScrollToBottom } from "@/components/use-scroll-to-bottom";
-
-const suggestedActions = [
-  {
-    title: "What's the summary",
-    label: "of these documents?",
-    action: "what's the summary of these documents?",
-  },
-  {
-    title: "Who is the author",
-    label: "of these documents?",
-    action: "who is the author of these documents?",
-  },
-];
 
 export function Chat({
   publicId,
@@ -95,32 +83,7 @@ export function Chat({
         </div>
 
         {messages.length === 0 && (
-          <div className="mx-auto grid w-full gap-2 px-4 sm:grid-cols-2 md:max-w-[500px] md:px-0">
-            {suggestedActions.map((suggestedAction, index) => (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 * index }}
-                key={index}
-                className={index > 1 ? "hidden sm:block" : "block"}
-              >
-                <button
-                  onClick={async () => {
-                    append({
-                      role: "user",
-                      content: suggestedAction.action,
-                    });
-                  }}
-                  className="flex w-full flex-col rounded-lg border border-zinc-200 p-2 text-left text-sm text-zinc-800 transition-colors hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
-                >
-                  <span className="font-medium">{suggestedAction.title}</span>
-                  <span className="text-zinc-500 dark:text-zinc-400">
-                    {suggestedAction.label}
-                  </span>
-                </button>
-              </motion.div>
-            ))}
-          </div>
+          <SuggestedActions appendSuggestedAction={append} />
         )}
 
         <form
