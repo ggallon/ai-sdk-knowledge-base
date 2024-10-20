@@ -61,6 +61,7 @@ const nextConfig = {
   },
   // By default, Next.js accepts files with the following extensions: .tsx, .ts, .jsx, .js.
   pageExtensions: ["ts", "tsx"],
+  poweredByHeader: false,
   // A list of packages that should be treated as external in the server build.
   serverExternalPackages: ["pdf-parse"],
 };
