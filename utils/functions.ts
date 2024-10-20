@@ -1,3 +1,11 @@
+export class AuthError extends Error {}
+
+export class ASKError extends Error {
+  constructor(message: string) {
+    super(`AI SDK Kwonledge: ${message}`);
+  }
+}
+
 interface ApplicationError extends Error {
   info: string;
   status: number;

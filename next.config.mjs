@@ -32,6 +32,14 @@ const nextConfig = {
         /*
          * Match all request paths except for the ones starting with:
          * - api (API routes)
+         */
+        source: "/((?!api).*)",
+        headers: [{ key: "X-Content-Type-Options", value: "nosniff" }],
+      },
+      {
+        /*
+         * Match all request paths except for the ones starting with:
+         * - api (API routes)
          * - _next/image (image optimization files)
          * - _next/static (static files)
          * - favicon.ico, sitemap.xml, robots.txt (metadata files)
@@ -44,6 +52,14 @@ const nextConfig = {
           { type: "header", key: "purpose", value: "prefetch" },
         ],
         headers: [
+          {
+            key: "Permissions-Policy",
+            value: "microphone=(), geolocation=()",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
           {
             key: "Content-Security-Policy",
             value: contentSecurityPolicyHeaderValue,
@@ -61,6 +77,7 @@ const nextConfig = {
   },
   // By default, Next.js accepts files with the following extensions: .tsx, .ts, .jsx, .js.
   pageExtensions: ["ts", "tsx"],
+  poweredByHeader: false,
   // A list of packages that should be treated as external in the server build.
   serverExternalPackages: ["pdf-parse"],
 };
