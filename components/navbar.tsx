@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { auth, signOut } from "@/app/(auth)/auth";
+import { auth } from "@/app/(auth)/auth";
 import { History } from "./history";
+import { SignOutForm } from "./sign-out-form";
 
 export const Navbar = async () => {
   const session = await auth();
@@ -20,19 +21,7 @@ export const Navbar = async () => {
             {session.user?.email}
           </div>
           <div className="absolute right-0 top-6 hidden w-full flex-col pt-5 group-hover:flex">
-            <form
-              action={async () => {
-                "use server";
-                await signOut();
-              }}
-            >
-              <button
-                type="submit"
-                className="w-full rounded-md bg-red-500 p-1 text-sm text-red-50 hover:bg-red-600"
-              >
-                Sign out
-              </button>
-            </form>
+            <SignOutForm />
           </div>
         </div>
       ) : (
