@@ -1,15 +1,13 @@
 import { generateId } from "ai";
 import { redirect } from "next/navigation";
-import { auth } from "@/app/(auth)/auth";
 import { Chat } from "@/components/chat";
+import { verifySession } from "@/lib/auth/session";
 
 export default async function Page() {
-  const session = await auth();
-  if (!session?.user) {
+  const user = await verifySession();
+  if (!user) {
     redirect("/login");
   }
 
-  return (
-    <Chat publicId={generateId()} initialMessages={[]} session={session} />
-  );
+  return <Chat publicId={generateId()} initialMessages={[]} user={user} />;
 }

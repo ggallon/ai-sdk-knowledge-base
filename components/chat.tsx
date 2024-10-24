@@ -2,7 +2,6 @@
 
 import type { Message } from "ai";
 import { useChat } from "ai/react";
-import type { Session } from "next-auth";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Files } from "@/components/files";
@@ -10,15 +9,16 @@ import { FileIcon } from "@/components/icons";
 import { Message as PreviewMessage } from "@/components/message";
 import { SuggestedActions } from "@/components/suggested-actions";
 import { useScrollToBottom } from "@/components/use-scroll-to-bottom";
+import type { UserSession } from "@/lib/auth/session";
 
 export function Chat({
   publicId,
   initialMessages,
-  session,
+  user,
 }: {
   publicId: string;
   initialMessages: Array<Message>;
-  session: Session | null;
+  user: UserSession | null;
 }) {
   const [selectedFilePathnames, setSelectedFilePathnames] = useState<
     Array<string>
@@ -27,29 +27,27 @@ export function Chat({
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (isMounted !== false && session && session.user) {
+    if (isMounted !== false && user) {
       localStorage.setItem(
-        `${session.user.email}/selected-file-pathnames`,
+        `${user.email}/selected-file-pathnames`,
         JSON.stringify(selectedFilePathnames),
       );
     }
-  }, [selectedFilePathnames, isMounted, session]);
+  }, [selectedFilePathnames, isMounted, user]);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    if (session && session.user) {
+    if (user) {
       setSelectedFilePathnames(
         JSON.parse(
-          localStorage.getItem(
-            `${session.user.email}/selected-file-pathnames`,
-          ) || "[]",
+          localStorage.getItem(`${user.email}/selected-file-pathnames`) || "[]",
         ),
       );
     }
-  }, [session]);
+  }, [user]);
 
   const { messages, handleSubmit, input, setInput, append } = useChat({
     body: { publicId, selectedFilePathnames },

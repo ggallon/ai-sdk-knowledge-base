@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/app/(auth)/auth";
 import { Chat as PreviewChat } from "@/components/chat";
 import { getChatByPublicId } from "@/drizzle/query/chat";
+import { verifySession } from "@/lib/auth/session";
 
 interface PageProps {
   params: Promise<{
@@ -10,8 +10,8 @@ interface PageProps {
 }
 
 export default async function Page(props: PageProps) {
-  const session = await auth();
-  if (!session?.user) {
+  const user = await verifySession();
+  if (!user) {
     redirect("/login");
   }
 
@@ -21,7 +21,7 @@ export default async function Page(props: PageProps) {
     notFound();
   }
 
-  if (chat.author !== session.user?.email) {
+  if (chat.author !== user.email) {
     notFound();
   }
 
@@ -29,7 +29,7 @@ export default async function Page(props: PageProps) {
     <PreviewChat
       publicId={chat.publicId}
       initialMessages={chat.messages}
-      session={session}
+      user={user}
     />
   );
 }

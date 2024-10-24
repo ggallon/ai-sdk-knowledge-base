@@ -22,7 +22,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const passwordsMatch = await isPasswordValid(password, user.password);
         if (passwordsMatch) {
-          return { email: user.email };
+          return {
+            id: user.id,
+            email: user.email,
+          };
         }
 
         return null;

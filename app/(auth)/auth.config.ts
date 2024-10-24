@@ -10,6 +10,18 @@ export const authConfig = {
     // while this file is also used in non-Node.js environments
   ],
   callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (token.id) {
+        session.user.id = token.id;
+      }
+      return session;
+    },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnChat = nextUrl.pathname.startsWith("/");
