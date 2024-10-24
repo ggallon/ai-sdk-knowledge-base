@@ -3,25 +3,24 @@ import { auth } from "@/app/(auth)/auth";
 import { deleteChunksByFilePath } from "@/drizzle/query/chunk";
 import { AuthError, ASKError } from "@/utils/functions";
 
-export async function DELETE(request: Request) {
+export const DELETE = auth(async function DELETE(req) {
   try {
-    const session = await auth();
-    if (!session?.user) {
+    if (!req.auth?.user) {
       throw new AuthError("Unauthorized");
     }
 
-    if (request.body === null) {
+    if (req.body === null) {
       throw new ASKError("Request body is empty");
     }
 
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
     const fileurl = searchParams.get("fileurl");
     if (fileurl === null) {
       throw new ASKError("File url not provided");
     }
 
     const { pathname } = await head(fileurl);
-    const { user } = session;
+    const { user } = req.auth;
     if (!pathname.startsWith(user.email!)) {
       throw new AuthError("Forbidden");
     }
@@ -48,4 +47,4 @@ export async function DELETE(request: Request) {
 
     return new Response("Internal Server Error", { status: 500 });
   }
-}
+});

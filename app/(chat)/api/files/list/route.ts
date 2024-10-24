@@ -2,14 +2,13 @@ import { list } from "@vercel/blob";
 import { auth } from "@/app/(auth)/auth";
 import { AuthError } from "@/utils/functions";
 
-export async function GET() {
+export const GET = auth(async function GET(req) {
   try {
-    const session = await auth();
-    if (!session?.user) {
+    if (!req.auth?.user) {
       throw new AuthError("Unauthorized");
     }
 
-    const { user } = session;
+    const { user } = req.auth;
     const { blobs } = await list({ prefix: user.email! });
 
     return Response.json(
@@ -30,4 +29,4 @@ export async function GET() {
 
     return new Response("Internal Server Error", { status: 500 });
   }
-}
+});

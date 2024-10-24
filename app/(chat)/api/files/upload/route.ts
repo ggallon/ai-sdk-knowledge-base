@@ -7,23 +7,22 @@ import { insertChunks } from "@/drizzle/query/chunk";
 import { AuthError, ASKError } from "@/utils/functions";
 import { getPdfContentFromUrl } from "@/utils/pdf";
 
-export async function POST(request: Request) {
+export const POST = auth(async function POST(req) {
   try {
-    const session = await auth();
-    if (!session?.user) {
+    if (!req.auth?.user) {
       throw new AuthError("Unauthorized");
     }
 
-    if (request.body === null) {
+    if (req.body === null) {
       throw new ASKError("Request body is empty");
     }
 
-    const { searchParams } = new URL(request.url);
+    const { user } = req.auth;
+    const { searchParams } = new URL(req.url);
     const filename = searchParams.get("filename");
-    const { user } = session;
     const { downloadUrl, pathname, url } = await put(
       `${user.email}/${filename}`,
-      request.body,
+      req.body,
       {
         access: "public",
       },
@@ -67,4 +66,4 @@ export async function POST(request: Request) {
 
     return new Response("Internal Server Error", { status: 500 });
   }
-}
+});
