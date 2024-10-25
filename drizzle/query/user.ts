@@ -3,7 +3,7 @@ import { db } from "@/drizzle/db";
 import { UserTable, type User } from "@/drizzle/schema";
 import { hashPassword } from "@/utils/hash";
 
-export async function getUser(
+export async function getUserByEmail(
   email: User["email"],
 ): Promise<Omit<User, "password"> | undefined> {
   return await db.query.UserTable.findFirst({
@@ -12,11 +12,20 @@ export async function getUser(
   });
 }
 
+export async function getUserById(
+  userId: User["id"],
+): Promise<Omit<User, "password"> | undefined> {
+  return await db.query.UserTable.findFirst({
+    columns: { password: false },
+    where: eq(UserTable.id, userId),
+  });
+}
+
 export async function getUserWithPassword(
   email: User["email"],
 ): Promise<Omit<User, "createdAt"> | undefined> {
   return await db.query.UserTable.findFirst({
-    columns: { createdAt: false },
+    columns: { id: true, email: true, password: true },
     where: eq(UserTable.email, email),
   });
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { createUser, getUser } from "@/drizzle/query/user";
+import { createUser, getUserByEmail } from "@/drizzle/query/user";
 import { signIn } from "./auth";
 import { authSchema } from "./auth-schema";
 
@@ -41,7 +41,7 @@ export const register = async (
     }
 
     const { email, password } = validatedFields.data;
-    const user = await getUser(email);
+    const user = await getUserByEmail(email);
     if (user) {
       return { status: "user_exists" };
     } else {
