@@ -91,7 +91,6 @@ export const Files = ({
             multiple={false}
             onChange={async (event) => {
               const file = event.target.files![0];
-
               if (file) {
                 setUploadQueue((currentQueue) => [...currentQueue, file.name]);
 

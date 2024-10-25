@@ -10,7 +10,7 @@
     "format": "prettier --ignore-unknown --write .",
     "ts": "pnpm tsc --noEmit",
     "db:generate": "dotenv -c -- drizzle-kit generate --config=drizzle-dev.config.ts",
-    "db:migrate": "dotenv -c -- drizzle-kit migrate  --config=drizzle.config.ts",
+    "db:migrate": "dotenv -c -- drizzle-kit migrate  --config=drizzle-dev.config.ts",
     "db:push": "dotenv -c -- drizzle-kit push --config=drizzle-dev.config.ts",
     "db:studio": "dotenv -c -- drizzle-kit studio --config=drizzle-dev.config.ts",
     "update-deps": "pnpm update --interactive --latest"

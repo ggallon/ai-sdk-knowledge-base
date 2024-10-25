@@ -27,10 +27,10 @@ export const ChatTable = pgTable("Chat", {
     .$defaultFn(() => uuidv4()),
   publicId: varchar("publicId", { length: 32 }).unique().notNull(),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
-  author: varchar("author", { length: 64 })
+  ownerId: uuid("ownerId")
     .notNull()
-    .references(() => UserTable.email, { onDelete: "cascade" }),
-  messages: json("messages").notNull(),
+    .references(() => UserTable.id, { onDelete: "cascade" }),
+  messages: json("messages").$type<Message[]>().notNull(),
 });
 
 export const ChunkTable = pgTable(
@@ -40,8 +40,11 @@ export const ChunkTable = pgTable(
       .primaryKey()
       .$defaultFn(() => uuidv4()),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
-    chunkRef: text("chunkRef").notNull(),
+    ownerId: uuid("ownerId")
+      .notNull()
+      .references(() => UserTable.id, { onDelete: "cascade" }),
     filePath: text("filePath").notNull(),
+    chunkRef: text("chunkRef").notNull(),
     content: text("content").notNull(),
     embedding: real("embedding").array().notNull(),
     embeddingVector: vector("embeddingVector", { dimensions: 1536 }),
@@ -54,9 +57,7 @@ export const ChunkTable = pgTable(
   }),
 );
 
-export type Chat = Omit<typeof ChatTable.$inferSelect, "messages"> & {
-  messages: Message[];
-};
+export type Chat = typeof ChatTable.$inferSelect;
 export type ChatInsert = typeof ChatTable.$inferInsert;
 
 export type Chunk = Omit<typeof ChunkTable.$inferSelect, "embeddingVector">;

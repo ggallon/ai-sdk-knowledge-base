@@ -2,27 +2,28 @@ import { head, del } from "@vercel/blob";
 import { auth } from "@/app/(auth)/auth";
 import { deleteChunksByFilePath } from "@/drizzle/query/chunk";
 import { AuthError, ASKError } from "@/utils/functions";
+import { ASK_BLOB_FOLDER_NAME } from "../constants";
 
-export async function DELETE(request: Request) {
+export async function DELETE(req: Request) {
   try {
     const session = await auth();
-    if (!session?.user) {
+    if (!session?.user?.id) {
       throw new AuthError("Unauthorized");
     }
 
-    if (request.body === null) {
+    if (req.body === null) {
       throw new ASKError("Request body is empty");
     }
 
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
     const fileurl = searchParams.get("fileurl");
     if (fileurl === null) {
       throw new ASKError("File url not provided");
     }
 
     const { pathname } = await head(fileurl);
-    const { user } = session;
-    if (!pathname.startsWith(user.email!)) {
+    const prefix = `${ASK_BLOB_FOLDER_NAME}/${session.user.id}`;
+    if (!pathname.startsWith(prefix)) {
       throw new AuthError("Forbidden");
     }
 

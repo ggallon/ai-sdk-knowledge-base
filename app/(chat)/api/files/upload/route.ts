@@ -6,28 +6,26 @@ import { auth } from "@/app/(auth)/auth";
 import { insertChunks } from "@/drizzle/query/chunk";
 import { AuthError, ASKError } from "@/utils/functions";
 import { getPdfContentFromUrl } from "@/utils/pdf";
+import { ASK_BLOB_FOLDER_NAME } from "../constants";
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
     const session = await auth();
-    if (!session?.user) {
+    if (!session?.user?.id) {
       throw new AuthError("Unauthorized");
     }
 
-    if (request.body === null) {
+    if (req.body === null) {
       throw new ASKError("Request body is empty");
     }
 
-    const { searchParams } = new URL(request.url);
+    const ownerId = session.user.id;
+    const { searchParams } = new URL(req.url);
     const filename = searchParams.get("filename");
-    const { user } = session;
-    const { downloadUrl, pathname, url } = await put(
-      `${user.email}/${filename}`,
-      request.body,
-      {
-        access: "public",
-      },
-    );
+    const filePath = `${ASK_BLOB_FOLDER_NAME}/${ownerId}/${filename}`;
+    const { downloadUrl, pathname, url } = await put(filePath, req.body, {
+      access: "public",
+    });
     const content = await getPdfContentFromUrl(downloadUrl);
     const textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
@@ -40,8 +38,9 @@ export async function POST(request: Request) {
 
     await insertChunks({
       chunks: chunkedContent.map((chunk, i) => ({
-        chunkRef: `${user.email}/${filename}/${i}`,
-        filePath: `${user.email}/${filename}`,
+        ownerId,
+        chunkRef: `${filePath}/${i}`,
+        filePath,
         content: chunk.pageContent,
         embedding: embeddings[i],
         embeddingVector: embeddings[i],

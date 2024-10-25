@@ -7,36 +7,33 @@ import {
   type Experimental_LanguageModelV1Middleware as LanguageModelV1Middleware,
 } from "ai";
 import { z } from "zod";
-import { auth } from "@/app/(auth)/auth";
 import { getChunksByFilePaths } from "@/drizzle/query/chunk";
 import { registry } from "./setup-registry";
 import { getLastUserMessageText } from "./utils/get-last-user-message-text";
 import { addToLastUserMessage } from "./utils/add-to-last-user-message";
 
 // schema for validating the custom provider metadata
-const selectionSchema = z.object({
-  files: z.object({
-    selection: z.array(z.string()),
-  }),
+const ragMetadataSchema = z.object({
+  userId: z.string(),
+  selectedFilePathnames: z.array(z.string()),
 });
 
 export const ragMiddleware: LanguageModelV1Middleware = {
   transformParams: async ({ params }) => {
-    const session = await auth();
-    if (!session) return params; // no user session
     // validate the provider metadata with Zod:
-    const { success, data } = selectionSchema.safeParse(
-      params.providerMetadata,
+    const { providerMetadata, ...restOfParams } = params;
+    const { success, data } = ragMetadataSchema.safeParse(
+      providerMetadata?.rag,
     );
     if (!success) {
-      return params; // no files selected
+      return restOfParams; // no user session and/or no files selected
     }
 
     const lastUserMessageContent = getLastUserMessageText({
-      prompt: params.prompt,
+      prompt: restOfParams.prompt,
     });
     if (!lastUserMessageContent) {
-      return params; // no message
+      return restOfParams; // no message
     }
 
     // Classify the user prompt as whether it requires more context or not
@@ -51,7 +48,7 @@ export const ragMiddleware: LanguageModelV1Middleware = {
 
     // only use RAG for questions
     if (classification !== "question") {
-      return params;
+      return restOfParams;
     }
 
     // Use hypothetical document embeddings:
@@ -70,9 +67,8 @@ export const ragMiddleware: LanguageModelV1Middleware = {
 
     // find relevant chunks based on the selection
     const chunksBySelection = await getChunksByFilePaths({
-      filePaths: data.files.selection.map(
-        (path) => `${session.user?.email}/${path}`,
-      ),
+      ownerId: data.userId,
+      filePaths: data.selectedFilePathnames,
     });
 
     const chunksWithSimilarity = chunksBySelection.map((chunk) => ({
@@ -98,6 +94,6 @@ export const ragMiddleware: LanguageModelV1Middleware = {
     ];
 
     // add the chunks to the last user message
-    return addToLastUserMessage({ text, params });
+    return addToLastUserMessage({ text, params: restOfParams });
   },
 };

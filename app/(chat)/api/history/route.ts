@@ -1,13 +1,26 @@
 import { auth } from "@/app/(auth)/auth";
-import { getChatsByUser } from "@/drizzle/query/chat";
+import { getChatsByUserId } from "@/drizzle/query/chat";
+import { AuthError } from "@/utils/functions";
 
 export async function GET() {
-  const session = await auth();
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new AuthError("Unauthorized");
+    }
 
-  if (!session || !session.user) {
-    return Response.json("Unauthorized!", { status: 401 });
+    const chats = await getChatsByUserId({ userId: session.user.id });
+    return Response.json(chats);
+  } catch (error) {
+    console.error(
+      "API Error handling history:",
+      error instanceof Error ? error.message : String(error),
+    );
+
+    if (error instanceof AuthError) {
+      return new Response(null, { status: 401 });
+    }
+
+    return new Response("Internal Server Error", { status: 500 });
   }
-
-  const chats = await getChatsByUser({ email: session.user.email! });
-  return Response.json(chats);
 }
