@@ -4,13 +4,14 @@ import { auth } from "@/app/(auth)/auth";
 import { createChatMessage } from "@/drizzle/query/chat";
 import { AuthError } from "@/utils/functions";
 
-export const POST = auth(async function POST(req) {
+export async function POST(req: Request) {
   try {
-    if (!req.auth?.user?.id) {
+    const session = await auth();
+    if (!session?.user?.id) {
       throw new AuthError("Unauthorized");
     }
 
-    const { id: userId } = req.auth.user;
+    const { id: userId } = session.user;
     const { publicId, messages, selectedFilePathnames } = await req.json();
     const result = await streamText({
       model: customModel,
@@ -49,4 +50,4 @@ export const POST = auth(async function POST(req) {
 
     return new Response("Internal Server Error", { status: 500 });
   }
-});
+}

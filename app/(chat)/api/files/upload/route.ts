@@ -8,9 +8,10 @@ import { AuthError, ASKError } from "@/utils/functions";
 import { getPdfContentFromUrl } from "@/utils/pdf";
 import { ASK_BLOB_FOLDER_NAME } from "../constants";
 
-export const POST = auth(async function POST(req) {
+export async function POST(req: Request) {
   try {
-    if (!req.auth?.user?.id) {
+    const session = await auth();
+    if (!session?.user?.id) {
       throw new AuthError("Unauthorized");
     }
 
@@ -18,7 +19,7 @@ export const POST = auth(async function POST(req) {
       throw new ASKError("Request body is empty");
     }
 
-    const ownerId = req.auth.user.id;
+    const ownerId = session.user.id;
     const { searchParams } = new URL(req.url);
     const filename = searchParams.get("filename");
     const filePath = `${ASK_BLOB_FOLDER_NAME}/${ownerId}/${filename}`;
@@ -65,4 +66,4 @@ export const POST = auth(async function POST(req) {
 
     return new Response("Internal Server Error", { status: 500 });
   }
-});
+}

@@ -3,13 +3,14 @@ import { auth } from "@/app/(auth)/auth";
 import { AuthError } from "@/utils/functions";
 import { ASK_BLOB_FOLDER_NAME } from "../constants";
 
-export const GET = auth(async function GET(req) {
+export async function GET() {
   try {
-    if (!req.auth?.user?.id) {
+    const session = await auth();
+    if (!session?.user?.id) {
       throw new AuthError("Unauthorized");
     }
 
-    const prefix = `${ASK_BLOB_FOLDER_NAME}/${req.auth.user.id}`;
+    const prefix = `${ASK_BLOB_FOLDER_NAME}/${session.user.id}`;
     const { blobs } = await list({ prefix });
 
     return Response.json(
@@ -30,4 +31,4 @@ export const GET = auth(async function GET(req) {
 
     return new Response("Internal Server Error", { status: 500 });
   }
-});
+}

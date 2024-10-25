@@ -4,9 +4,10 @@ import { deleteChunksByFilePath } from "@/drizzle/query/chunk";
 import { AuthError, ASKError } from "@/utils/functions";
 import { ASK_BLOB_FOLDER_NAME } from "../constants";
 
-export const DELETE = auth(async function DELETE(req) {
+export async function DELETE(req: Request) {
   try {
-    if (!req.auth?.user?.id) {
+    const session = await auth();
+    if (!session?.user?.id) {
       throw new AuthError("Unauthorized");
     }
 
@@ -21,7 +22,7 @@ export const DELETE = auth(async function DELETE(req) {
     }
 
     const { pathname } = await head(fileurl);
-    const prefix = `${ASK_BLOB_FOLDER_NAME}/${req.auth.user.id}`;
+    const prefix = `${ASK_BLOB_FOLDER_NAME}/${session.user.id}`;
     if (!pathname.startsWith(prefix)) {
       throw new AuthError("Forbidden");
     }
@@ -48,4 +49,4 @@ export const DELETE = auth(async function DELETE(req) {
 
     return new Response("Internal Server Error", { status: 500 });
   }
-});
+}

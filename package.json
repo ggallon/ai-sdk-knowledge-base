@@ -72,9 +72,6 @@
       "ai>@ai-sdk/solid": "-",
       "ai>@ai-sdk/svelte": "-",
       "ai>@ai-sdk/vue": "-"
-    },
-    "patchedDependencies": {
-      "next-auth@5.0.0-beta.25": "patches/next-auth@5.0.0-beta.25.patch"
     }
   },
   "engines": {
