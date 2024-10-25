@@ -1,8 +1,8 @@
 import { head, del } from "@vercel/blob";
 import { auth } from "@/app/(auth)/auth";
 import { deleteChunksByFilePath } from "@/drizzle/query/chunk";
+import { ASK_BLOB_FOLDER_NAME } from "@/lib/constants";
 import { AuthError, ASKError } from "@/utils/functions";
-import { ASK_BLOB_FOLDER_NAME } from "../constants";
 
 export async function DELETE(req: Request) {
   try {
