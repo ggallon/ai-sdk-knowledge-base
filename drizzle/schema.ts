@@ -31,7 +31,7 @@ export const ChatTable = pgTable("Chat", {
     .notNull()
     .references(() => UserTable.id, { onDelete: "cascade" }),
   author: varchar("author", { length: 64 }),
-  messages: json("messages").notNull(),
+  messages: json("messages").$type<Message[]>().notNull(),
 });
 
 export const ChunkTable = pgTable(
@@ -58,12 +58,8 @@ export const ChunkTable = pgTable(
   }),
 );
 
-export type Chat = Omit<typeof ChatTable.$inferSelect, "messages"> & {
-  messages: Message[];
-};
-export type ChatInsert = Omit<typeof ChatTable.$inferInsert, "messages"> & {
-  messages: Message[];
-};
+export type Chat = typeof ChatTable.$inferSelect;
+export type ChatInsert = typeof ChatTable.$inferInsert,
 
 export type Chunk = Omit<typeof ChunkTable.$inferSelect, "embeddingVector">;
 export type ChunkInsert = typeof ChunkTable.$inferInsert;
