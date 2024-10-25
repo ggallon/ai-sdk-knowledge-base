@@ -61,7 +61,9 @@ export const ChunkTable = pgTable(
 export type Chat = Omit<typeof ChatTable.$inferSelect, "messages"> & {
   messages: Message[];
 };
-export type ChatInsert = typeof ChatTable.$inferInsert;
+export type ChatInsert = Omit<typeof ChatTable.$inferInsert, "messages"> & {
+  messages: Message[];
+};
 
 export type Chunk = Omit<typeof ChunkTable.$inferSelect, "embeddingVector">;
 export type ChunkInsert = typeof ChunkTable.$inferInsert;
