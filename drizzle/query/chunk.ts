@@ -11,7 +11,7 @@ export async function getChunksByFilePaths({
   ownerId,
   filePaths,
 }: {
-  ownerId: Chunk["owner"];
+  ownerId: Chunk["ownerId"];
   filePaths: Chunk["filePath"][];
 }): Promise<Pick<Chunk, "content" | "embedding">[]> {
   const ownerFilePaths = filePaths.map(
@@ -20,7 +20,7 @@ export async function getChunksByFilePaths({
   return await db.query.ChunkTable.findMany({
     columns: { content: true, embedding: true },
     where: and(
-      eq(ChunkTable.owner, ownerId),
+      eq(ChunkTable.ownerId, ownerId),
       inArray(ChunkTable.filePath, ownerFilePaths),
     ),
   });

@@ -27,10 +27,9 @@ export const ChatTable = pgTable("Chat", {
     .$defaultFn(() => uuidv4()),
   publicId: varchar("publicId", { length: 32 }).unique().notNull(),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
-  owner: uuid("owner")
+  ownerId: uuid("ownerId")
     .notNull()
     .references(() => UserTable.id, { onDelete: "cascade" }),
-  author: varchar("author", { length: 64 }),
   messages: json("messages").$type<Message[]>().notNull(),
 });
 
@@ -41,11 +40,11 @@ export const ChunkTable = pgTable(
       .primaryKey()
       .$defaultFn(() => uuidv4()),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
-    chunkRef: text("chunkRef").notNull(),
-    filePath: text("filePath").notNull(),
-    owner: uuid("owner")
+    ownerId: uuid("ownerId")
       .notNull()
       .references(() => UserTable.id, { onDelete: "cascade" }),
+    filePath: text("filePath").notNull(),
+    chunkRef: text("chunkRef").notNull(),
     content: text("content").notNull(),
     embedding: real("embedding").array().notNull(),
     embeddingVector: vector("embeddingVector", { dimensions: 1536 }),

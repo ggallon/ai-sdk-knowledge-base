@@ -1,5 +1,5 @@
 {
-  "id": "8df9cdb4-485b-47a1-8bb9-648a79120e6a",
+  "id": "6b4e0b5b-067c-485a-98d4-66304541b0cf",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -27,9 +27,9 @@
           "notNull": true,
           "default": "now()"
         },
-        "author": {
-          "name": "author",
-          "type": "varchar(64)",
+        "ownerId": {
+          "name": "ownerId",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -42,15 +42,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "Chat_author_User_email_fk": {
-          "name": "Chat_author_User_email_fk",
+        "Chat_ownerId_User_id_fk": {
+          "name": "Chat_ownerId_User_id_fk",
           "tableFrom": "Chat",
           "tableTo": "User",
           "columnsFrom": [
-            "author"
+            "ownerId"
           ],
           "columnsTo": [
-            "email"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -65,7 +65,8 @@
             "publicId"
           ]
         }
-      }
+      },
+      "checkConstraints": {}
     },
     "public.Chunk": {
       "name": "Chunk",
@@ -84,14 +85,20 @@
           "notNull": true,
           "default": "now()"
         },
-        "chunkRef": {
-          "name": "chunkRef",
-          "type": "text",
+        "ownerId": {
+          "name": "ownerId",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
         "filePath": {
           "name": "filePath",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "chunkRef": {
+          "name": "chunkRef",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -133,9 +140,24 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Chunk_ownerId_User_id_fk": {
+          "name": "Chunk_ownerId_User_id_fk",
+          "tableFrom": "Chunk",
+          "tableTo": "User",
+          "columnsFrom": [
+            "ownerId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
     "public.User": {
       "name": "User",
@@ -178,12 +200,14 @@
             "email"
           ]
         }
-      }
+      },
+      "checkConstraints": {}
     }
   },
   "enums": {},
   "schemas": {},
   "sequences": {},
+  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

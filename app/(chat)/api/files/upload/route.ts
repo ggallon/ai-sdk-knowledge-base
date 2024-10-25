@@ -18,10 +18,10 @@ export const POST = auth(async function POST(req) {
       throw new ASKError("Request body is empty");
     }
 
-    const userId = req.auth.user.id;
+    const ownerId = req.auth.user.id;
     const { searchParams } = new URL(req.url);
     const filename = searchParams.get("filename");
-    const filePath = `${ASK_BLOB_FOLDER_NAME}/${userId}/${filename}`;
+    const filePath = `${ASK_BLOB_FOLDER_NAME}/${ownerId}/${filename}`;
     const { downloadUrl, pathname, url } = await put(filePath, req.body, {
       access: "public",
     });
@@ -37,7 +37,7 @@ export const POST = auth(async function POST(req) {
 
     await insertChunks({
       chunks: chunkedContent.map((chunk, i) => ({
-        owner: userId,
+        ownerId,
         chunkRef: `${filePath}/${i}`,
         filePath,
         content: chunk.pageContent,

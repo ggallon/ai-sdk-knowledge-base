@@ -1,10 +1,11 @@
+import { Message } from "ai";
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/drizzle/db";
 import { ChatTable, type Chat, type ChatInsert } from "@/drizzle/schema";
 
 export async function createChatMessage({
   publicId,
-  owner,
+  ownerId,
   messages,
 }: ChatInsert) {
   let existingChat: Chat | undefined = undefined;
@@ -17,15 +18,15 @@ export async function createChatMessage({
     return await db
       .update(ChatTable)
       .set({
-        messages: JSON.stringify(messages),
+        messages: JSON.stringify(messages) as unknown as Message[],
       })
       .where(eq(ChatTable.id, existingChat.id));
   }
 
   return await db.insert(ChatTable).values({
     publicId,
-    owner,
-    messages: JSON.stringify(messages),
+    ownerId,
+    messages: JSON.stringify(messages) as unknown as Message[],
   });
 }
 
@@ -42,10 +43,10 @@ export async function getChatByPublicId({
 export async function getChatsByUserId({
   userId,
 }: {
-  userId: Chat["owner"];
+  userId: Chat["ownerId"];
 }): Promise<Chat[] | undefined> {
   return (await db.query.ChatTable.findMany({
-    where: eq(ChatTable.owner, userId),
+    where: eq(ChatTable.ownerId, userId),
     orderBy: desc(ChatTable.createdAt),
   })) as unknown as Chat[] | undefined;
 }

@@ -10,7 +10,7 @@ export const POST = auth(async function POST(req) {
       throw new AuthError("Unauthorized");
     }
 
-    const { id: userId, email: userEmail } = req.auth.user;
+    const { id: userId } = req.auth.user;
     const { publicId, messages, selectedFilePathnames } = await req.json();
     const result = await streamText({
       model: customModel,
@@ -26,7 +26,7 @@ export const POST = auth(async function POST(req) {
       onFinish: async ({ text }) => {
         await createChatMessage({
           publicId,
-          owner: userId,
+          ownerId: userId,
           messages: [...messages, { role: "assistant", content: text }],
         });
       },

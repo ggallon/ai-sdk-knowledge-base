@@ -21,7 +21,7 @@ export default async function Page(props: PageProps) {
     notFound();
   }
 
-  if (chat.owner !== user.id) {
+  if (chat.ownerId !== user.id) {
     notFound();
   }
 
