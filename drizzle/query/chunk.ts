@@ -1,5 +1,5 @@
 import { and, eq, inArray } from "drizzle-orm";
-import { ASK_BLOB_FOLDER_NAME } from "@/app/(chat)/api/files/constants";
+import { ASK_BLOB_FOLDER_NAME } from "@/lib/constants";
 import { db } from "@/drizzle/db";
 import { ChunkTable, type Chunk, type ChunkInsert } from "@/drizzle/schema";
 

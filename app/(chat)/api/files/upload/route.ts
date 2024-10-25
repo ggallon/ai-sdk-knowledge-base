@@ -4,9 +4,9 @@ import { put } from "@vercel/blob";
 import { registry } from "@/ai/setup-registry";
 import { auth } from "@/app/(auth)/auth";
 import { insertChunks } from "@/drizzle/query/chunk";
+import { ASK_BLOB_FOLDER_NAME } from "@/lib/constants";
 import { AuthError, ASKError } from "@/utils/functions";
 import { getPdfContentFromUrl } from "@/utils/pdf";
-import { ASK_BLOB_FOLDER_NAME } from "../constants";
 
 export async function POST(req: Request) {
   try {

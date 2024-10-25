@@ -1,7 +1,7 @@
 import { list } from "@vercel/blob";
 import { auth } from "@/app/(auth)/auth";
+import { ASK_BLOB_FOLDER_NAME } from "@/lib/constants";
 import { AuthError } from "@/utils/functions";
-import { ASK_BLOB_FOLDER_NAME } from "../constants";
 
 export async function GET() {
   try {
