@@ -1,9 +1,9 @@
 // Content-Security-Policy
+const IS_DEV = process.env.NODE_ENV === "development";
+const IS_PROD = process.env.NODE_ENV === "production";
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'strict-dynamic' https: http: ${
-      process.env.NODE_ENV === "production" ? "" : `'unsafe-eval'`
-    };
+    script-src 'self' 'unsafe-inline'${IS_PROD ? "" : " 'unsafe-eval'"};
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
@@ -11,7 +11,10 @@ const cspHeader = `
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    upgrade-insecure-requests;
+    ${
+      // for Safari, as it upgrades to https even on localhost and fails to load assets
+      IS_DEV ? "" : "upgrade-insecure-requests;"
+    }
 `;
 // Replace newline characters and spaces
 const contentSecurityPolicyHeaderValue = cspHeader
