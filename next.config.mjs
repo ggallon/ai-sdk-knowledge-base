@@ -23,7 +23,7 @@ const nextConfig = {
   eslint: {
     // By default, Next.js will run ESLint for all files
     // in the pages/, app/, components/, lib/, and src/ directories
-    dirs: ["ai", "app", "components", "drizzle", "utils"],
+    dirs: ["ai", "app", "components", "drizzle", "lib", "utils"],
   },
   // Set custom HTTP headers on the response to an incoming request on a given path.
   async headers() {
