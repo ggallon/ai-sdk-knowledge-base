@@ -18,8 +18,9 @@ export const POST = auth(async function POST(req) {
         "you are a friendly assistant! keep your responses concise and helpful.",
       messages: convertToCoreMessages(messages),
       experimental_providerMetadata: {
-        files: {
-          selection: selectedFilePathnames,
+        rag: {
+          userId,
+          selectedFilePathnames,
         },
       },
       onFinish: async ({ text }) => {
@@ -27,7 +28,6 @@ export const POST = auth(async function POST(req) {
           publicId,
           owner: userId,
           messages: [...messages, { role: "assistant", content: text }],
-          author: userEmail ?? "",
         });
       },
       experimental_telemetry: {

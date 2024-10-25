@@ -6,7 +6,6 @@ export async function createChatMessage({
   publicId,
   owner,
   messages,
-  author,
 }: ChatInsert) {
   let existingChat: Chat | undefined = undefined;
 
@@ -27,7 +26,6 @@ export async function createChatMessage({
     publicId,
     owner,
     messages: JSON.stringify(messages),
-    author,
   });
 }
 

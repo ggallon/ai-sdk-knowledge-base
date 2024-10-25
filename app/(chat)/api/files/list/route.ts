@@ -1,19 +1,20 @@
 import { list } from "@vercel/blob";
 import { auth } from "@/app/(auth)/auth";
 import { AuthError } from "@/utils/functions";
+import { ASK_BLOB_FOLDER_NAME } from "../constants";
 
 export const GET = auth(async function GET(req) {
   try {
-    if (!req.auth?.user) {
+    if (!req.auth?.user?.id) {
       throw new AuthError("Unauthorized");
     }
 
-    const { user } = req.auth;
-    const { blobs } = await list({ prefix: user.email! });
+    const prefix = `${ASK_BLOB_FOLDER_NAME}/${req.auth.user.id}`;
+    const { blobs } = await list({ prefix });
 
     return Response.json(
       blobs.map((blob) => ({
-        pathname: blob.pathname.replace(`${user.email!}/`, ""),
+        pathname: blob.pathname.replace(`${prefix}/`, ""),
         url: blob.url,
       })),
     );

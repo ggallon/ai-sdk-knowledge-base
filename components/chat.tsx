@@ -29,7 +29,7 @@ export function Chat({
   useEffect(() => {
     if (isMounted !== false && user) {
       localStorage.setItem(
-        `${user.email}/selected-file-pathnames`,
+        `${user.id}/selected-file-pathnames`,
         JSON.stringify(selectedFilePathnames),
       );
     }
@@ -43,7 +43,7 @@ export function Chat({
     if (user) {
       setSelectedFilePathnames(
         JSON.parse(
-          localStorage.getItem(`${user.email}/selected-file-pathnames`) || "[]",
+          localStorage.getItem(`${user.id}/selected-file-pathnames`) || "[]",
         ),
       );
     }

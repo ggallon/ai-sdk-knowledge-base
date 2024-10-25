@@ -6,6 +6,7 @@ import { auth } from "@/app/(auth)/auth";
 import { insertChunks } from "@/drizzle/query/chunk";
 import { AuthError, ASKError } from "@/utils/functions";
 import { getPdfContentFromUrl } from "@/utils/pdf";
+import { ASK_BLOB_FOLDER_NAME } from "../constants";
 
 export const POST = auth(async function POST(req) {
   try {
@@ -17,16 +18,13 @@ export const POST = auth(async function POST(req) {
       throw new ASKError("Request body is empty");
     }
 
-    const { id: userId, email: userEmail } = req.auth.user;
+    const userId = req.auth.user.id;
     const { searchParams } = new URL(req.url);
     const filename = searchParams.get("filename");
-    const { downloadUrl, pathname, url } = await put(
-      `${userEmail}/${filename}`,
-      req.body,
-      {
-        access: "public",
-      },
-    );
+    const filePath = `${ASK_BLOB_FOLDER_NAME}/${userId}/${filename}`;
+    const { downloadUrl, pathname, url } = await put(filePath, req.body, {
+      access: "public",
+    });
     const content = await getPdfContentFromUrl(downloadUrl);
     const textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
@@ -40,8 +38,8 @@ export const POST = auth(async function POST(req) {
     await insertChunks({
       chunks: chunkedContent.map((chunk, i) => ({
         owner: userId,
-        chunkRef: `${userEmail}/${filename}/${i}`,
-        filePath: `${userEmail}/${filename}`,
+        chunkRef: `${filePath}/${i}`,
+        filePath,
         content: chunk.pageContent,
         embedding: embeddings[i],
         embeddingVector: embeddings[i],
