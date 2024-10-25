@@ -1,14 +1,14 @@
 import { auth } from "@/app/(auth)/auth";
-import { getChatsByUser } from "@/drizzle/query/chat";
+import { getChatsByUserId } from "@/drizzle/query/chat";
 import { AuthError } from "@/utils/functions";
 
 export const GET = auth(async function GET(req) {
   try {
-    if (!req.auth?.user) {
+    if (!req.auth?.user?.id) {
       throw new AuthError("Unauthorized");
     }
 
-    const chats = await getChatsByUser({ email: req.auth.user.email! });
+    const chats = await getChatsByUserId({ userId: req.auth.user.id });
     return Response.json(chats);
   } catch (error) {
     console.error(

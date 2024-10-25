@@ -9,7 +9,7 @@ import { getPdfContentFromUrl } from "@/utils/pdf";
 
 export const POST = auth(async function POST(req) {
   try {
-    if (!req.auth?.user) {
+    if (!req.auth?.user?.id) {
       throw new AuthError("Unauthorized");
     }
 
@@ -17,11 +17,11 @@ export const POST = auth(async function POST(req) {
       throw new ASKError("Request body is empty");
     }
 
-    const { user } = req.auth;
+    const { id: userId, email: userEmail } = req.auth.user;
     const { searchParams } = new URL(req.url);
     const filename = searchParams.get("filename");
     const { downloadUrl, pathname, url } = await put(
-      `${user.email}/${filename}`,
+      `${userEmail}/${filename}`,
       req.body,
       {
         access: "public",
@@ -39,8 +39,9 @@ export const POST = auth(async function POST(req) {
 
     await insertChunks({
       chunks: chunkedContent.map((chunk, i) => ({
-        chunkRef: `${user.email}/${filename}/${i}`,
-        filePath: `${user.email}/${filename}`,
+        owner: userId,
+        chunkRef: `${userEmail}/${filename}/${i}`,
+        filePath: `${userEmail}/${filename}`,
         content: chunk.pageContent,
         embedding: embeddings[i],
         embeddingVector: embeddings[i],

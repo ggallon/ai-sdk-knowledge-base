@@ -4,6 +4,7 @@ import { ChatTable, type Chat, type ChatInsert } from "@/drizzle/schema";
 
 export async function createChatMessage({
   publicId,
+  owner,
   messages,
   author,
 }: ChatInsert) {
@@ -24,6 +25,7 @@ export async function createChatMessage({
 
   return await db.insert(ChatTable).values({
     publicId,
+    owner,
     messages: JSON.stringify(messages),
     author,
   });
@@ -39,13 +41,13 @@ export async function getChatByPublicId({
   })) as unknown as Chat | undefined;
 }
 
-export async function getChatsByUser({
-  email,
+export async function getChatsByUserId({
+  userId,
 }: {
-  email: string;
+  userId: Chat["owner"];
 }): Promise<Chat[] | undefined> {
   return (await db.query.ChatTable.findMany({
-    where: eq(ChatTable.author, email),
+    where: eq(ChatTable.owner, userId),
     orderBy: desc(ChatTable.createdAt),
   })) as unknown as Chat[] | undefined;
 }
