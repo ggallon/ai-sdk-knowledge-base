@@ -49,12 +49,11 @@ export const ChunkTable = pgTable(
     embedding: real("embedding").array().notNull(),
     embeddingVector: vector("embeddingVector", { dimensions: 1536 }),
   },
-  (table) => ({
-    embeddingIndex: index("embeddingVectorIndex").using(
+  (table) => [index("embeddingVectorIndex").using(
       "hnsw",
       table.embeddingVector.op("vector_cosine_ops"),
     ),
-  }),
+  ],
 );
 
 export type Chat = typeof ChatTable.$inferSelect;
