@@ -5,10 +5,10 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@neondatabase/serverless': 0.10.1
   '@types/pg': 8.11.10
   '@types/react': npm:types-react@rc
   '@types/react-dom': npm:types-react-dom@rc
-  '@neondatabase/serverless': 0.10.1
   cookie: 0.7.2
   postcss: 8.4.47
   swr: 2.2.6-beta.4
@@ -18,6 +18,11 @@ overrides:
   ai>@ai-sdk/vue: '-'
   next>@next/swc-win32-arm64-msvc: '-'
   next>@next/swc-win32-x64-msvc: '-'
+
+patchedDependencies:
+  next-auth@5.0.0-beta.25:
+    hash: werdarxdwmucx5w5lusgzbgnii
+    path: patches/next-auth@5.0.0-beta.25.patch
 
 importers:
 
@@ -58,7 +63,7 @@ importers:
         version: 15.0.3-canary.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-603e6108-20241029(react@19.0.0-rc-603e6108-20241029))(react@19.0.0-rc-603e6108-20241029)
       next-auth:
         specifier: 5.0.0-beta.25
-        version: 5.0.0-beta.25(next@15.0.3-canary.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-603e6108-20241029(react@19.0.0-rc-603e6108-20241029))(react@19.0.0-rc-603e6108-20241029))(react@19.0.0-rc-603e6108-20241029)
+        version: 5.0.0-beta.25(patch_hash=werdarxdwmucx5w5lusgzbgnii)(next@15.0.3-canary.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-603e6108-20241029(react@19.0.0-rc-603e6108-20241029))(react@19.0.0-rc-603e6108-20241029))(react@19.0.0-rc-603e6108-20241029)
       pdf-parse:
         specifier: 1.1.1
         version: 1.1.1
@@ -5345,7 +5350,7 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-auth@5.0.0-beta.25(next@15.0.3-canary.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-603e6108-20241029(react@19.0.0-rc-603e6108-20241029))(react@19.0.0-rc-603e6108-20241029))(react@19.0.0-rc-603e6108-20241029):
+  next-auth@5.0.0-beta.25(patch_hash=werdarxdwmucx5w5lusgzbgnii)(next@15.0.3-canary.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-603e6108-20241029(react@19.0.0-rc-603e6108-20241029))(react@19.0.0-rc-603e6108-20241029))(react@19.0.0-rc-603e6108-20241029):
     dependencies:
       '@auth/core': 0.37.2
       next: 15.0.3-canary.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-603e6108-20241029(react@19.0.0-rc-603e6108-20241029))(react@19.0.0-rc-603e6108-20241029)
