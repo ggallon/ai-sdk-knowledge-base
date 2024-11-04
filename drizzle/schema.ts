@@ -2,7 +2,7 @@ import type { Message } from "ai";
 import {
   index,
   json,
-  pgSchema,
+  pgTable,
   real,
   text,
   timestamp,
@@ -12,9 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { v4 as uuidv4 } from "uuid";
 
-export const publicSchema = pgSchema("public");
-
-export const userTable = publicSchema.table("User", {
+export const userTable = pgTable("User", {
   id: uuid("id")
     .primaryKey()
     .$defaultFn(() => uuidv4()),
@@ -23,7 +21,7 @@ export const userTable = publicSchema.table("User", {
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
 
-export const chatTable = publicSchema.table("Chat", {
+export const chatTable = pgTable("Chat", {
   id: uuid("id")
     .primaryKey()
     .$defaultFn(() => uuidv4()),
@@ -35,7 +33,7 @@ export const chatTable = publicSchema.table("Chat", {
   messages: json("messages").$type<Message[]>().notNull(),
 });
 
-export const chunkTable = publicSchema.table(
+export const chunkTable = pgTable(
   "Chunk",
   {
     id: uuid("id")
