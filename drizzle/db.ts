@@ -11,5 +11,3 @@ export const db = drizzle({
   schema,
   logger: process.env.NODE_ENV === "development",
 });
-
-export type DrizzleClient = typeof db;
