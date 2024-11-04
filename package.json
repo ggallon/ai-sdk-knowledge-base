@@ -8,11 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --ignore-unknown --write .",
+    "format:check": "prettier --ignore-unknown --check .",
     "ts": "pnpm tsc --noEmit",
     "db:generate": "dotenv -c -- drizzle-kit generate --config=drizzle-dev.config.ts",
     "db:migrate": "dotenv -c -- drizzle-kit migrate  --config=drizzle-dev.config.ts",
     "db:push": "dotenv -c -- drizzle-kit push --config=drizzle-dev.config.ts",
     "db:studio": "dotenv -c -- drizzle-kit studio --config=drizzle-dev.config.ts",
+    "ci:version": "changeset version",
     "update-deps": "pnpm update --interactive --latest"
   },
   "dependencies": {
@@ -41,6 +43,7 @@
     "zod": "3.23.8"
   },
   "devDependencies": {
+    "@changesets/cli": "2.27.9",
     "@types/node": "^20",
     "@types/pdf-parse": "1.1.4",
     "@types/react": "npm:types-react@rc",
