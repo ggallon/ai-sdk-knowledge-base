@@ -11,14 +11,6 @@ This template demonstrates the usage of the [Language Model Middleware](https://
 Run [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
 
 ```bash
-npx create-next-app --example https://github.com/ggallon/ai-sdk-knowledge-base ai-sdk-knowledge-base-example
-```
-
-```bash
-yarn create next-app --example https://github.com/ggallon/ai-sdk-knowledge-base ai-sdk-knowledge-base-example
-```
-
-```bash
 pnpm create next-app --example https://github.com/ggallon/ai-sdk-knowledge-base ai-sdk-knowledge-base-example
 ```
 
