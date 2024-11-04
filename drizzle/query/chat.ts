@@ -1,7 +1,7 @@
-import { Message } from "ai";
+import type { Message } from "ai";
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/drizzle/db";
-import { ChatTable, type Chat, type ChatInsert } from "@/drizzle/schema";
+import { chatTable, type Chat, type ChatInsert } from "@/drizzle/schema";
 
 export async function createChatMessage({
   publicId,
@@ -16,14 +16,14 @@ export async function createChatMessage({
 
   if (publicId && existingChat) {
     return await db
-      .update(ChatTable)
+      .update(chatTable)
       .set({
         messages: JSON.stringify(messages) as unknown as Message[],
       })
-      .where(eq(ChatTable.id, existingChat.id));
+      .where(eq(chatTable.id, existingChat.id));
   }
 
-  return await db.insert(ChatTable).values({
+  return await db.insert(chatTable).values({
     publicId,
     ownerId,
     messages: JSON.stringify(messages) as unknown as Message[],
@@ -35,8 +35,8 @@ export async function getChatByPublicId({
 }: {
   publicId: Chat["publicId"];
 }): Promise<Chat | undefined> {
-  return (await db.query.ChatTable.findFirst({
-    where: eq(ChatTable.publicId, publicId),
+  return (await db.query.chatTable.findFirst({
+    where: eq(chatTable.publicId, publicId),
   })) as unknown as Chat | undefined;
 }
 
@@ -45,8 +45,8 @@ export async function getChatsByUserId({
 }: {
   userId: Chat["ownerId"];
 }): Promise<Chat[] | undefined> {
-  return (await db.query.ChatTable.findMany({
-    where: eq(ChatTable.ownerId, userId),
-    orderBy: desc(ChatTable.createdAt),
+  return (await db.query.chatTable.findMany({
+    where: eq(chatTable.ownerId, userId),
+    orderBy: desc(chatTable.createdAt),
   })) as unknown as Chat[] | undefined;
 }

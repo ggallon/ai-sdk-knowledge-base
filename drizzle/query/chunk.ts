@@ -1,10 +1,10 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { ASK_BLOB_FOLDER_NAME } from "@/lib/constants";
 import { db } from "@/drizzle/db";
-import { ChunkTable, type Chunk, type ChunkInsert } from "@/drizzle/schema";
+import { chunkTable, type Chunk, type ChunkInsert } from "@/drizzle/schema";
 
 export async function insertChunks({ chunks }: { chunks: ChunkInsert[] }) {
-  return await db.insert(ChunkTable).values(chunks);
+  return await db.insert(chunkTable).values(chunks);
 }
 
 export async function getChunksByFilePaths({
@@ -17,11 +17,11 @@ export async function getChunksByFilePaths({
   const ownerFilePaths = filePaths.map(
     (path) => `${ASK_BLOB_FOLDER_NAME}/${ownerId}/${path}`,
   );
-  return await db.query.ChunkTable.findMany({
+  return await db.query.chunkTable.findMany({
     columns: { content: true, embedding: true },
     where: and(
-      eq(ChunkTable.ownerId, ownerId),
-      inArray(ChunkTable.filePath, ownerFilePaths),
+      eq(chunkTable.ownerId, ownerId),
+      inArray(chunkTable.filePath, ownerFilePaths),
     ),
   });
 }
@@ -31,5 +31,5 @@ export async function deleteChunksByFilePath({
 }: {
   filePath: Chunk["filePath"];
 }) {
-  return await db.delete(ChunkTable).where(eq(ChunkTable.filePath, filePath));
+  return await db.delete(chunkTable).where(eq(chunkTable.filePath, filePath));
 }

@@ -1,18 +1,18 @@
 import type { Message } from "ai";
 import {
-  pgTable,
   index,
+  json,
+  pgTable,
   real,
   text,
   timestamp,
   uuid,
   varchar,
   vector,
-  json,
 } from "drizzle-orm/pg-core";
 import { v4 as uuidv4 } from "uuid";
 
-export const UserTable = pgTable("User", {
+export const userTable = pgTable("User", {
   id: uuid("id")
     .primaryKey()
     .$defaultFn(() => uuidv4()),
@@ -21,7 +21,7 @@ export const UserTable = pgTable("User", {
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
 
-export const ChatTable = pgTable("Chat", {
+export const chatTable = pgTable("Chat", {
   id: uuid("id")
     .primaryKey()
     .$defaultFn(() => uuidv4()),
@@ -29,11 +29,11 @@ export const ChatTable = pgTable("Chat", {
   createdAt: timestamp("createdAt").notNull().defaultNow(),
   ownerId: uuid("ownerId")
     .notNull()
-    .references(() => UserTable.id, { onDelete: "cascade" }),
+    .references(() => userTable.id, { onDelete: "cascade" }),
   messages: json("messages").$type<Message[]>().notNull(),
 });
 
-export const ChunkTable = pgTable(
+export const chunkTable = pgTable(
   "Chunk",
   {
     id: uuid("id")
@@ -42,25 +42,26 @@ export const ChunkTable = pgTable(
     createdAt: timestamp("createdAt").notNull().defaultNow(),
     ownerId: uuid("ownerId")
       .notNull()
-      .references(() => UserTable.id, { onDelete: "cascade" }),
+      .references(() => userTable.id, { onDelete: "cascade" }),
     filePath: text("filePath").notNull(),
     chunkRef: text("chunkRef").notNull(),
     content: text("content").notNull(),
     embedding: real("embedding").array().notNull(),
     embeddingVector: vector("embeddingVector", { dimensions: 1536 }),
   },
-  (table) => [index("embeddingVectorIndex").using(
+  (table) => [
+    index("embeddingVectorIndex").using(
       "hnsw",
       table.embeddingVector.op("vector_cosine_ops"),
     ),
   ],
 );
 
-export type Chat = typeof ChatTable.$inferSelect;
-export type ChatInsert = typeof ChatTable.$inferInsert;
+export type Chat = typeof chatTable.$inferSelect;
+export type ChatInsert = typeof chatTable.$inferInsert;
 
-export type Chunk = Omit<typeof ChunkTable.$inferSelect, "embeddingVector">;
-export type ChunkInsert = typeof ChunkTable.$inferInsert;
+export type Chunk = Omit<typeof chunkTable.$inferSelect, "embeddingVector">;
+export type ChunkInsert = typeof chunkTable.$inferInsert;
 
-export type User = typeof UserTable.$inferSelect;
-export type UserInsert = typeof UserTable.$inferInsert;
+export type User = typeof userTable.$inferSelect;
+export type UserInsert = typeof userTable.$inferInsert;
